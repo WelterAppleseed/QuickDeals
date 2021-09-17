@@ -1,3 +1,14 @@
 <resources>
     <string name="app_name">QuickDeals</string>
+    <string name="reminder_title_setter">Type, what deal you have to do!</string>
+    <string name="summary_text">QuickDeals</string>
+    <string name="big_text">Don\'t\ forget!</string>
+    <string name="content_text">Don\'t\ forget about deals! Exactly, about </string>
+    <string name="big_content_title">Hey, dude!</string>
+    <string name="notify_title">Notify:</string>
+    <string name="notify_in_time">Notify in time</string>
+    <string name="push_notif">Push notification</string>
+    <string name="alarm">Set Alarm</string>
+    <string name="add_reminder">ADD REMINDER</string>
+    <string name="there_is_no_rmdr_yet">There is no reminder yet.</string>
 </resources>

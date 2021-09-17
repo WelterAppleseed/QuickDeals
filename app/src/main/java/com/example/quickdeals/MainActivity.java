@@ -1,86 +1,75 @@
 package com.example.quickdeals;
 
+import android.app.AlarmManager;
 import android.app.Dialog;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.Space;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.slidingpanelayout.widget.SlidingPaneLayout;
 
 import com.chauthai.swipereveallayout.SwipeRevealLayout;
-import com.example.quickdeals.daily.adapter_and_activity.ListActivity;
 import com.example.quickdeals.daily.adapter_and_activity.ListAdapter;
-import com.example.quickdeals.utils.Utils;
+import com.example.quickdeals.utils.AlarmManagerBroadcastReceiver;
+import com.example.quickdeals.utils.Listeners;
+import com.example.quickdeals.utils.NotificationCreator;
+import com.example.quickdeals.utils.ReminderDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.zerobranch.layout.SwipeLayout;
 
-import java.util.zip.Inflater;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private FloatingActionButton addItem;
     private ListAdapter adapter;
-    private LinearLayout itemLayout;
+    private LinearLayout itemLayout, defLayout;
     private Dialog addItemDialog;
+    private NotificationManager mNotificationManager;
+    private AlarmManagerBroadcastReceiver alarmManager;
+    private Listeners listeners;
+    private ReminderDialog dialogCreator;
+    private Dialog dialog;
     private LayoutInflater inflater;
-    private LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Utils.dpToPx(70));
+    private static final int NOTIFY_ID = 101;
+    private static String CHANNEL_ID = "Cat channel";
+    private PendingIntent pendingIntent;
+    private NotificationCreator notificationCreator;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.daily_activity_layout);
         inflater = LayoutInflater.from(MainActivity.this);
         contentCreate();
-    }
+
+}
+
     private void contentCreate() {
+        listeners = new Listeners();
+        mNotificationManager =
+                (NotificationManager) MainActivity.this.getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationCreator = new NotificationCreator(MainActivity.this, mNotificationManager);
         itemLayout = (LinearLayout) findViewById(R.id.item_layout);
+        defLayout = (LinearLayout) findViewById(R.id.def_layout);
         addItem = (FloatingActionButton) findViewById(R.id.add_item);
+        dialogCreator = new ReminderDialog(MainActivity.this, listeners, notificationCreator, itemLayout, defLayout);
+        dialog = dialogCreator.getCustomizingDialog();
         addItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final Dialog dialog = new Dialog(MainActivity.this);
-                dialog.setContentView(R.layout.add_row_reminder);
-
-                final EditText text = dialog.findViewById(R.id.item_title);
-                final SwipeRevealLayout layout = (SwipeRevealLayout) LayoutInflater.from(dialog.getContext()).inflate(R.layout.reminder_layout, null, false);
-                layout.setLayoutParams(params);
-                layout.setPadding(Utils.dpToPx(10), 0, Utils.dpToPx(10), 0);
-                FrameLayout textFrame = (FrameLayout) layout.getChildAt(1);
-                final TextView itemTitle = (TextView) textFrame.getChildAt(0);
-                layout.setLockDrag(true);
-                layout.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        text.performClick();
-                    }
-                });
-                Button button = dialog.findViewById(R.id.item_add_button);
-                button.setText("OK");
-                button.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        layout.setLockDrag(false);
-                        itemTitle.setText(text.getText().toString());
-                        itemLayout.addView(layout);
-                        Space space = new Space(MainActivity.this);
-                        space.setMinimumHeight(Utils.dpToPx(10));
-                        itemLayout.addView(space);
-                        dialog.dismiss();
-                    }
-                });
                 dialog.show();
             }
         });
+        System.out.println(System.currentTimeMillis());
     }
 
     public void layoutTwoOnClick(View v) {
@@ -98,9 +87,17 @@ public class MainActivity extends AppCompatActivity {
     public void moreOnClick(View v) {
         Toast.makeText(MainActivity.this, "More clicked", Toast.LENGTH_SHORT).show();
     }
-
-    public void deleteOnClick(View v) {
-        Toast.makeText(MainActivity.this, "Delete clicked", Toast.LENGTH_SHORT).show();
+    public void deleteItem(View view, LinearLayout itemLayout, LinearLayout defLayout) {
+        if (view.getParent() instanceof SwipeLayout) {
+            try {
+                itemLayout.removeView((View) view.getParent());
+                if (itemLayout.getChildCount() == 1) {
+                    defLayout.setVisibility(View.VISIBLE);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public void archiveOnClick(View v) {
@@ -117,5 +114,24 @@ public class MainActivity extends AppCompatActivity {
 
     public void starOnClick(View v) {
         Toast.makeText(MainActivity.this, "Star clicked", Toast.LENGTH_SHORT).show();
+    }
+
+    public void start() {
+        AlarmManager manager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Date dat = new Date();
+        Calendar cal_alarm = Calendar.getInstance();
+        Calendar cal_now = Calendar.getInstance();
+        cal_now.setTime(dat);
+        cal_alarm.setTime(dat);
+        cal_alarm.set(Calendar.HOUR_OF_DAY, 16);
+        cal_alarm.set(Calendar.MINUTE, 39);
+        cal_alarm.set(Calendar.SECOND, 0);
+        if (cal_alarm.before(cal_now)) {
+            cal_alarm.add(Calendar.DATE, 1);
+        }
+
+        Intent myIntent = new Intent(getApplicationContext(), AlarmManagerBroadcastReceiver.class);
+        pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, myIntent, 0);
+        manager.set(AlarmManager.RTC_WAKEUP, cal_alarm.getTimeInMillis(), pendingIntent);
     }
 }

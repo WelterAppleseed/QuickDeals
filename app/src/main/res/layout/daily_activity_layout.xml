@@ -28,6 +28,7 @@
                 android:gravity="center"
                 android:text="TextView" />
 
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -35,12 +36,29 @@
                 android:orientation="vertical">
 
                 <LinearLayout
+                    android:id="@+id/def_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/textView4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="There is no reminder yet."
+                        android:textSize="30sp" />
+                </LinearLayout>
+
+                <LinearLayout
                     android:id="@+id/item_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="4"
                     android:fitsSystemWindows="true"
                     android:orientation="vertical"
+                    android:visibility="visible"
                     tools:context=".MainActivity">
 
                     <androidx.appcompat.widget.Toolbar
@@ -51,50 +69,6 @@
                         android:visibility="gone"
                         app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
                         app:titleTextColor="@android:color/white" />
-
-                    <com.chauthai.swipereveallayout.SwipeRevealLayout
-                        android:id="@+id/swipe_layout"
-                        android:layout_width="match_parent"
-                        android:layout_height="70dp"
-                        android:layout_margin="10dp"
-                        app:dragEdge="right"
-                        app:mode="normal">
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:orientation="horizontal">
-
-                            <TextView
-                                android:layout_width="70dp"
-                                android:layout_height="match_parent"
-                                android:background="@android:color/darker_gray"
-                                android:gravity="center"
-                                android:text="More"
-                                android:textColor="@android:color/white" />
-
-                            <TextView
-                                android:layout_width="70dp"
-                                android:layout_height="match_parent"
-                                android:background="@android:color/holo_red_dark"
-                                android:gravity="center"
-                                android:text="Delete"
-                                android:textColor="@android:color/white" />
-                        </LinearLayout>
-
-                        <FrameLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:background="@drawable/border_solid_white">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:gravity="center"
-                                android:text="My Awesome Layout 1" />
-                        </FrameLayout>
-                    </com.chauthai.swipereveallayout.SwipeRevealLayout>
 
 
                 </LinearLayout>
@@ -108,7 +82,6 @@
                     app:srcCompat="@android:drawable/ic_input_add" />
 
             </LinearLayout>
-
 
             <LinearLayout
                 android:layout_width="match_parent"
