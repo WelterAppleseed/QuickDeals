@@ -14,19 +14,16 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.chauthai.swipereveallayout.SwipeRevealLayout;
 import com.example.quickdeals.daily.adapter_and_activity.ListAdapter;
-import com.example.quickdeals.utils.AlarmManagerBroadcastReceiver;
+import com.example.quickdeals.daily.dialog.notifications.AlarmManagerBroadcastReceiver;
 import com.example.quickdeals.utils.Listeners;
-import com.example.quickdeals.utils.NotificationCreator;
-import com.example.quickdeals.utils.ReminderDialog;
+import com.example.quickdeals.daily.dialog.notifications.NotificationCreator;
+import com.example.quickdeals.daily.dialog.ReminderDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.zerobranch.layout.SwipeLayout;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private FloatingActionButton addItem;
@@ -69,7 +66,6 @@ public class MainActivity extends AppCompatActivity {
                 dialog.show();
             }
         });
-        System.out.println(System.currentTimeMillis());
     }
 
     public void layoutTwoOnClick(View v) {

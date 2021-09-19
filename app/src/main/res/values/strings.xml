@@ -8,7 +8,9 @@
     <string name="notify_title">Notify:</string>
     <string name="notify_in_time">Notify in time</string>
     <string name="push_notif">Push notification</string>
-    <string name="alarm">Set Alarm</string>
-    <string name="add_reminder">ADD REMINDER</string>
-    <string name="there_is_no_rmdr_yet">There is no reminder yet.</string>
+    <string name="second_alarm_text">Set Alarm</string>
+    <string name="reminder_dialog_header">ADD REMINDER</string>
+    <string name="empty_reminder_layout_header">There is no reminder yet.</string>
+    <string name="spinner_header_title">Select the frequency of notifications…</string>
+    <string name="s_spinner_header_title">Frequency of notifications</string>
 </resources>
