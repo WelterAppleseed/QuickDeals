@@ -1,16 +1,12 @@
 package com.example.quickdeals.daily.adapter_and_activity;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.chauthai.swipereveallayout.SwipeRevealLayout;
 import com.chauthai.swipereveallayout.ViewBinderHelper;
@@ -39,7 +35,7 @@ public class ListAdapter extends ArrayAdapter<String> {
             holder = new ViewHolder();
             holder.swipeLayout = (SwipeRevealLayout) convertView.findViewById(R.id.swipe_layout);
             holder.frontView = convertView.findViewById(R.id.front_layout);
-            holder.deleteView = convertView.findViewById(R.id.delete_layout);
+            holder.deleteView = convertView.findViewById(R.id.delete_pane);
             holder.textView = (TextView) convertView.findViewById(R.id.text);
 
             convertView.setTag(holder);
@@ -60,7 +56,6 @@ public class ListAdapter extends ArrayAdapter<String> {
             holder.frontView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    System.out.println("1231231");
                 }
             });
         }

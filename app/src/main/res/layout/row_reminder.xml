@@ -10,7 +10,7 @@
     app:mode="same_level">
 
     <FrameLayout
-        android:id="@+id/delete_layout"
+        android:id="@+id/delete_pane"
         android:layout_width="wrap_content"
         android:layout_height="70dp"
         android:background="#ffcc0000">

@@ -1,117 +1,100 @@
 package com.example.quickdeals;
 
-import android.app.AlarmManager;
 import android.app.Dialog;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.Database;
+import androidx.room.Room;
 
-import com.example.quickdeals.daily.adapter_and_activity.ListAdapter;
-import com.example.quickdeals.daily.dialog.notifications.AlarmManagerBroadcastReceiver;
+import com.example.quickdeals.daily.DailyRemindersFragment;
+import com.example.quickdeals.daily.actions.ReminderActions;
+import com.example.quickdeals.database.RemDatabase;
+import com.example.quickdeals.database.entity.ReminderEntity;
 import com.example.quickdeals.utils.Listeners;
 import com.example.quickdeals.daily.dialog.notifications.NotificationCreator;
-import com.example.quickdeals.daily.dialog.ReminderDialog;
+import com.example.quickdeals.daily.ReminderInitializer;
+import com.example.quickdeals.utils.reminders.SavedReminder;
+import com.example.quickdeals.utils.states.States;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.zerobranch.layout.SwipeLayout;
 
-import java.util.Calendar;
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private FloatingActionButton addItem;
-    private ListAdapter adapter;
-    private LinearLayout itemLayout, defLayout;
+    private LinearLayout defLayout;
+    private RecyclerView itemLayout;
+    private List<SwipeLayout> itemList;
     private Dialog addItemDialog;
     private NotificationManager mNotificationManager;
-    private AlarmManagerBroadcastReceiver alarmManager;
     private Listeners listeners;
-    private ReminderDialog dialogCreator;
+    private ReminderInitializer dialogCreator;
+    private ReminderActions actions;
     private Dialog dialog;
     private LayoutInflater inflater;
     private static final int NOTIFY_ID = 101;
-    private static String CHANNEL_ID = "Cat channel";
     private PendingIntent pendingIntent;
     private NotificationCreator notificationCreator;
+    private static final String SHARED_PREFERENCES_NAME = "items";
+    private ConstraintLayout layout;
+    private SharedPreferences preferences;
+    private SavedReminder reminders;
+    private List<String> items;
+    private Intent changeReminder;
+    ArrayList<States> states;
+
+    public MainActivity() {
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.daily_activity_layout);
-        inflater = LayoutInflater.from(MainActivity.this);
-        contentCreate();
+        setContentView(R.layout.main);
+        DailyRemindersFragment.setContext(MainActivity.this);
+        //setInitialData();
+        //inflater = LayoutInflater.from(MainActivity.this);
+        //restoreReminders();
+        //contentCreate();
 
-}
+    }
 
-    private void contentCreate() {
-        listeners = new Listeners();
-        mNotificationManager =
-                (NotificationManager) MainActivity.this.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationCreator = new NotificationCreator(MainActivity.this, mNotificationManager);
-        itemLayout = (LinearLayout) findViewById(R.id.item_layout);
-        defLayout = (LinearLayout) findViewById(R.id.def_layout);
-        addItem = (FloatingActionButton) findViewById(R.id.add_item);
-        dialogCreator = new ReminderDialog(MainActivity.this, listeners, notificationCreator, itemLayout, defLayout);
-        dialog = dialogCreator.getCustomizingDialog();
-        addItem.setOnClickListener(new View.OnClickListener() {
+    /* private void setInitialData(){
+        states = new ArrayList<State>();
+        changeReminder = new Intent(MainActivity.this, RemindersOptions.class);
+
+    }
+    private void restoreReminders() {
+        items = new ArrayList<>();
+        preferences = getSharedPreferences("all_titles", Context.MODE_PRIVATE);
+        Map<String, ?> allEntries = preferences.getAll();
+        for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
+            String title = entry.getValue().toString();
+            items.add(title);
+        }
+        ImageButton dailyButton = (ImageButton) findViewById(R.id.first_fragment);
+        dailyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dialog.show();
+               startActivity(changeReminder);
             }
         });
+
+
     }
 
-    public void layoutTwoOnClick(View v) {
-        Toast.makeText(MainActivity.this, "Layout 2 clicked", Toast.LENGTH_SHORT).show();
-    }
 
-    public void layoutThreeOnClick(View v) {
-        Toast.makeText(MainActivity.this, "Layout 3 clicked", Toast.LENGTH_SHORT).show();
+    private void contentCreate() {
     }
-
-    public void layoutFourOnClick(View v) {
-        Toast.makeText(MainActivity.this, "Layout 4 clicked", Toast.LENGTH_SHORT).show();
-    }
-
-    public void moreOnClick(View v) {
-        Toast.makeText(MainActivity.this, "More clicked", Toast.LENGTH_SHORT).show();
-    }
-    public void deleteItem(View view, LinearLayout itemLayout, LinearLayout defLayout) {
-        if (view.getParent() instanceof SwipeLayout) {
-            try {
-                itemLayout.removeView((View) view.getParent());
-                if (itemLayout.getChildCount() == 1) {
-                    defLayout.setVisibility(View.VISIBLE);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    public void archiveOnClick(View v) {
-        Toast.makeText(MainActivity.this, "Archive clicked", Toast.LENGTH_SHORT).show();
-    }
-
-    public void helpOnClick(View v) {
-        Toast.makeText(MainActivity.this, "Help clicked", Toast.LENGTH_SHORT).show();
-    }
-
-    public void searchOnClick(View v) {
-        Toast.makeText(MainActivity.this, "Search clicked", Toast.LENGTH_SHORT).show();
-    }
-
-    public void starOnClick(View v) {
-        Toast.makeText(MainActivity.this, "Star clicked", Toast.LENGTH_SHORT).show();
-    }
-
     public void start() {
         AlarmManager manager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         Date dat = new Date();
@@ -130,4 +113,6 @@ public class MainActivity extends AppCompatActivity {
         pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, myIntent, 0);
         manager.set(AlarmManager.RTC_WAKEUP, cal_alarm.getTimeInMillis(), pendingIntent);
     }
+*/
+
 }

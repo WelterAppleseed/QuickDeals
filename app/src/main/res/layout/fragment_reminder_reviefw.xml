@@ -1,0 +1,362 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorWhite"
+    tools:context=".ReminderReview">
+
+    <LinearLayout
+        android:layout_width="410dp"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/view"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:layout_marginStart="18dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="18dp"
+            android:layout_marginBottom="20dp"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/icon_of_notif"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:padding="15dp"
+                app:srcCompat="@drawable/sport_icon" />
+
+            <EditText
+                android:id="@+id/rem_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:background="@drawable/border_gray_bottom_line"
+                android:gravity="center"
+                android:text="TextView"
+                android:textSize="30sp" />
+
+            <TextView
+                android:id="@+id/time"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_weight="2"
+                android:gravity="center"
+                android:text="23 Nov\n 12:35"
+                android:textColor="@color/colorBlack"
+                android:textSize="16sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:background="@drawable/blue_border_white_background"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="6dp"
+                android:gravity="center_vertical"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/icon_row_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:gravity="center"
+                    android:text="@string/review_icon"
+                    android:textSize="28sp" />
+
+                <EditText
+                    android:id="@+id/icon_row_state"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="5dp"
+                    android:background="@drawable/border_gray_bottom_line"
+                    android:text="TextView"
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:id="@+id/note_row_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:gravity="center_horizontal"
+                    android:text="@string/review_desc"
+                    android:textSize="28sp" />
+
+                <EditText
+                    android:id="@+id/note_row_state"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="5dp"
+                    android:background="@drawable/border_gray_bottom_line"
+                    android:text="Nothing"
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:id="@+id/time_row_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:gravity="center_horizontal"
+                    android:text="@string/review_time"
+                    android:textSize="28sp" />
+
+                <EditText
+                    android:id="@+id/time_row_state"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/border_gray_bottom_line"
+                    android:text="TextView"
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:id="@+id/inform_row_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:gravity="center_horizontal"
+                    android:text="@string/review_repeat"
+                    android:textSize="28sp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/inform_once_tv"
+                        style="?android:attr/borderlessButtonStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:background="@color/colorWhite"
+                        android:gravity="center"
+                        android:text="ONCE"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:id="@+id/slash"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:text="/"
+                        android:textColor="@color/colorBlack"
+                        android:textSize="20sp" />
+
+                    <Button
+                        android:id="@+id/inform_bc_tv"
+                        style="?android:attr/borderlessButtonStyle"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:background="@color/colorWhite"
+                        android:gravity="center"
+                        android:text="BEFORE CANCELED"
+                        android:textSize="16sp" />
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/alarm_row_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:gravity="center_horizontal"
+                    android:text="@string/review_alarm"
+                    android:textSize="28sp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/alarm_y"
+                        style="?android:attr/borderlessButtonStyle"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:background="@color/colorWhite"
+                        android:gravity="center"
+                        android:text="Yes"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:id="@+id/slash2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:text="/"
+                        android:textColor="@color/colorBlack"
+                        android:textSize="20sp" />
+
+                    <Button
+                        android:id="@+id/alarm_n"
+                        style="?android:attr/borderlessButtonStyle"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:background="@color/colorWhite"
+                        android:gravity="center"
+                        android:text="NO"
+                        android:textSize="18sp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <TableLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="10dp"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TableRow
+                    android:id="@+id/icon_row"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                </TableRow>
+
+                <TableRow
+                    android:id="@+id/title_row"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="20dp">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1">
+
+                    </RelativeLayout>
+
+                </TableRow>
+
+                <TableRow
+                    android:id="@+id/note_row"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="20dp">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1">
+
+                    </RelativeLayout>
+                </TableRow>
+
+                <TableRow
+                    android:id="@+id/time_row"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="20dp">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1">
+
+                    </RelativeLayout>
+                </TableRow>
+
+                <TableRow
+                    android:id="@+id/inform_row"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="20dp">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1">
+
+                    </RelativeLayout>
+                </TableRow>
+
+                <TableRow
+                    android:id="@+id/alarm_row"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="20dp">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1">
+
+                    </RelativeLayout>
+                </TableRow>
+            </TableLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/back_b"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="Back"
+                android:textSize="18sp" />
+
+            <Button
+                android:id="@+id/ok_b"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="Ok"
+                android:textSize="18sp" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</FrameLayout>

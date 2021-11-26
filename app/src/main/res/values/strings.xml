@@ -11,6 +11,19 @@
     <string name="second_alarm_text">Set Alarm</string>
     <string name="reminder_dialog_header">ADD REMINDER</string>
     <string name="empty_reminder_layout_header">There is no reminder yet.</string>
-    <string name="spinner_header_title">Select the frequency of notifications…</string>
-    <string name="s_spinner_header_title">Frequency of notifications</string>
+    <string name="spinner_header_title">Select the icon of notification…</string>
+    <string name="s_spinner_header_title">Icons of notification</string>
+    <string name="review_icon">Icon:</string>
+    <string name="review_title">Title: </string>
+    <string name="review_desc">Note: </string>
+    <string name="review_time">Time: </string>
+    <string name="review_repeat">Inform: </string>
+    <string name="review_alarm">Alarm:</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello, let\'s\ continue!</string>
+
+
+    <string name="action_settings">Settings</string>
+    <string name="my_cart">My Cart</string>
+    <string name="delete">DELETE</string>
 </resources>

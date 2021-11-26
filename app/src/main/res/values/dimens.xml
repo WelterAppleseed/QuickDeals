@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="input_num_size">40sp</dimen>
+
+
+    <dimen name="activity_padding_horizontal">16dp</dimen>
+    <dimen name="padd_30">30dp</dimen>
+    <dimen name="ic_delete">35dp</dimen>
+    <dimen name="thumbnail">90dp</dimen>
+</resources>

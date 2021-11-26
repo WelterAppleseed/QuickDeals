@@ -1,10 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#6200EE</color>
-    <color name="colorPrimaryDark">#3700B3</color>
-    <color name="colorAccent">#03DAC5</color>
+    <color name="colorPrimary">#FFFFFF</color>
+    <color name="colorPrimaryDark">#DADADA</color>
+    <color name="colorAccent">#32EA4B</color>
+    <color name="colorPressedB">#F8BA5D</color>
     <color name="colorNull">#00000000</color>
     <color name="colorRed">#DA2929</color>
     <color name="colorWhite">#FFFFFF</color>
     <color name="colorBlack">#000000</color>
+    <color name="colorGray">#CBFFAE</color>
+    <color name="colorTopbar">#EAEAEA</color>
+    <color name="colorOrange">#FFD277</color>
+    <color name="colorOnDeleteForeground">#99000000</color>
+    <color name="colorOnDeleteViewPagerForeground">#0E000000</color>
+
+
+
+    <color name="bg_row_background">#fa315b</color>
+    <color name="item_name">#535353</color>
+    <color name="description">#a9a9a9</color>
 </resources>

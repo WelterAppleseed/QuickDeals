@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".ReminderReview"
+    android:background="@color/colorWhite">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/rem_example"
+            layout="@layout/rem_shablon"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"/>
+
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp">
+
+            <TableRow
+                android:id="@+id/icon_row"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <TextView
+                        android:id="@+id/icon_row_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:gravity="center_vertical"
+                        android:text="@string/review_icon"
+                        android:textSize="28sp" />
+
+                    <TextView
+                        android:id="@+id/icon_row_state"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginTop="13dp"
+                        android:layout_marginStart="10dp"
+                        android:text="TextView"
+                        android:textSize="20sp"
+                        android:layout_toEndOf="@+id/icon_row_title"/>
+
+                    <ImageButton
+                        android:id="@+id/icon_change_b"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_gravity="end"
+                        android:scaleType="fitCenter"
+                        app:srcCompat="@drawable/topbar_wrench"
+                        android:layout_alignParentEnd="true"/>
+                </RelativeLayout>
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/title_row"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="20dp">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <TextView
+                        android:id="@+id/title_row_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:gravity="center_vertical"
+                        android:text="@string/review_title"
+                        android:textSize="28sp" />
+
+                    <TextView
+                        android:id="@+id/title_row_state"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginTop="13dp"
+                        android:layout_marginStart="10dp"
+                        android:text="TextView"
+                        android:textSize="20sp"
+                        android:layout_toEndOf="@+id/title_row_title"/>
+
+                    <ImageButton
+                        android:id="@+id/title_change_b"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_gravity="end"
+                        android:scaleType="fitCenter"
+                        app:srcCompat="@drawable/topbar_wrench"
+                        android:layout_alignParentEnd="true"/>
+                </RelativeLayout>
+
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/note_row"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="20dp">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <TextView
+                        android:id="@+id/note_row_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:gravity="center_vertical"
+                        android:text="@string/review_desc"
+                        android:textSize="28sp" />
+
+                    <TextView
+                        android:id="@+id/note_row_state"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginTop="13dp"
+                        android:layout_marginStart="10dp"
+                        android:text="TextView"
+                        android:textSize="20sp"
+                        android:layout_toEndOf="@+id/note_row_title"/>
+
+                    <ImageButton
+                        android:id="@+id/note_change_b"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_gravity="end"
+                        android:scaleType="fitCenter"
+                        app:srcCompat="@drawable/topbar_wrench"
+                        android:layout_alignParentEnd="true"/>
+                </RelativeLayout>
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/time_row"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="20dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <TextView
+                    android:id="@+id/time_row_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:gravity="center_vertical"
+                    android:text="@string/review_time"
+                    android:textSize="28sp" />
+
+                <TextView
+                    android:id="@+id/time_row_state"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginTop="13dp"
+                    android:layout_marginStart="10dp"
+                    android:text="TextView"
+                    android:textSize="20sp"
+                    android:layout_toEndOf="@+id/time_row_title"/>
+
+                <ImageButton
+                    android:id="@+id/time_change_b"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="end"
+                    android:scaleType="fitCenter"
+                    app:srcCompat="@drawable/topbar_wrench"
+                    android:layout_alignParentEnd="true"/>
+            </RelativeLayout>
+            </TableRow>
+            <TableRow
+                android:id="@+id/inform_row"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="20dp">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <TextView
+                        android:id="@+id/inform_row_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:gravity="center_vertical"
+                        android:text="@string/review_repeat"
+                        android:textSize="28sp" />
+
+                    <TextView
+                        android:id="@+id/inform_row_state"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginTop="13dp"
+                        android:layout_marginStart="10dp"
+                        android:text="TextView"
+                        android:textSize="20sp"
+                        android:layout_toEndOf="@+id/inform_row_title"/>
+
+                    <ImageButton
+                        android:id="@+id/inform_change_b"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_gravity="end"
+                        android:scaleType="fitCenter"
+                        app:srcCompat="@drawable/topbar_wrench"
+                        android:layout_alignParentEnd="true"/>
+                </RelativeLayout>
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/alarm_row"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="20dp">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <TextView
+                        android:id="@+id/alarm_row_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:gravity="center_vertical"
+                        android:text="@string/review_alarm"
+                        android:textSize="28sp" />
+
+                    <TextView
+                        android:id="@+id/alarm_row_state"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginTop="13dp"
+                        android:layout_marginStart="10dp"
+                        android:text="TextView"
+                        android:textSize="20sp"
+                        android:layout_toEndOf="@+id/alarm_row_title"/>
+
+                    <ImageButton
+                        android:id="@+id/alarm_change_b"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_gravity="end"
+                        android:scaleType="fitCenter"
+                        app:srcCompat="@drawable/topbar_wrench"
+                        android:layout_alignParentEnd="true"/>
+                </RelativeLayout>
+            </TableRow>
+        </TableLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="10dp"
+            android:gravity="bottom"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/cancel_b"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_marginStart="20dp"
+                android:layout_weight="1"
+                android:text="@android:string/cancel" />
+
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <Button
+                android:id="@+id/ok_b"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="20dp"
+                android:layout_weight="1"
+                android:text="@android:string/ok" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+</FrameLayout>

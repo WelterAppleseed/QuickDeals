@@ -1,0 +1,32 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigationFragment"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="bottom"
+    android:orientation="horizontal">
+
+    <ImageButton
+        android:id="@+id/dailyFragmentButton"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:src="@drawable/ic_launcher_foreground" />
+
+    <ImageButton
+        android:id="@+id/studyFragmentButton"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:src="@drawable/ic_launcher_foreground" />
+
+    <ImageButton
+        android:id="@+id/carWashFragmentButton"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:src="@drawable/ic_launcher_foreground" />
+
+    <ImageButton
+        android:id="@+id/activitiesFragmentButton"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:src="@drawable/ic_launcher_foreground" />
+</LinearLayout>
