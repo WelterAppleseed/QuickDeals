@@ -65,6 +65,4 @@ public class StartFragment extends Fragment {
         });
         return view;
     }
-    public void setStartFragmentSettings() {
-    }
 }

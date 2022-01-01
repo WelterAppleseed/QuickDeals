@@ -1,6 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.quickdeals">
     <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <application
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
@@ -19,7 +20,7 @@
             </intent-filter>
         </receiver>
         <service
-            android:name=".daily.dialog.notifications.NotificatiofnService"
+            android:name=".daily.dialog.notifications.NotificationService"
             android:exported="false" >
         </service>
         <service
@@ -30,6 +31,7 @@
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
+
         </service>
 
         <activity

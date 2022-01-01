@@ -6,29 +6,36 @@ import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.ItemTouchHelper;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.room.Room;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 import com.example.quickdeals.R;
 import com.example.quickdeals.ReminderDCC;
 import com.example.quickdeals.ReminderReview;
 import com.example.quickdeals.ShablonFragment;
-import com.example.quickdeals.database.RemDatabase;
-import com.example.quickdeals.database.dao.ReminderDao;
-import com.example.quickdeals.database.entity.ReminderEntity;
-import com.example.quickdeals.utils.Listeners;
+import com.example.quickdeals.daily.container.AlternativeDailyDealsContainerFragment;
+import com.example.quickdeals.daily.container.DefaultDailyDealsContainerFragment;
+import com.example.quickdeals.database.temporary.RemDatabase;
+import com.example.quickdeals.database.temporary.dao.ReminderDao;
+import com.example.quickdeals.database.temporary.entity.ReminderEntity;
+import com.example.quickdeals.study.TimelessReminderDCC;
 import com.example.quickdeals.utils.reminders.RecyclerItemAdapter;
 import com.example.quickdeals.utils.reminders.ReminderOptions;
 import com.example.quickdeals.utils.reminders.SavedReminder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 
 /**
@@ -45,10 +52,10 @@ public class DailyRemindersFragment extends Fragment implements View.OnClickList
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-   /* private ImageButton toStudyFragmentButton;
-    private ImageButton toCarWashFragmentButton;
-    private ImageButton toActivitiesFragmentButton;
-    private ImageButton toDailyFragmentButton;*/
+    /* private ImageButton toStudyFragmentButton;
+     private ImageButton toCarWashFragmentButton;
+     private ImageButton toActivitiesFragmentButton;
+     private ImageButton toDailyFragmentButton;*/
     private FloatingActionButton addButton;
     public static RecyclerView rList;
     private List<String> titles;
@@ -57,12 +64,20 @@ public class DailyRemindersFragment extends Fragment implements View.OnClickList
     private static RecyclerItemAdapter adapter;
     private ReminderOptions reminderDCC;
     private static Context context;
+    private static List<ReminderEntity> reminderEntityList;
     private RemDatabase db;
     private ReminderDao dao;
     private static ItemTouchHelper itemTouchHelper;
     public static View parentView;
-    private ReminderDCC dccFragment;
+    private static ReminderDCC dccFragment;
     private static ReminderReview reviewFragment;
+    private static boolean updated;
+    public static FrameLayout r;
+    private static FrameLayout frameLayout;
+    private static ImageView img;
+    private static ProgressBar progressBar;
+    public static DefaultDailyDealsContainerFragment defaultFragment;
+    public static AlternativeDailyDealsContainerFragment alternativeFragment;
 
     public static void setParentView(View parentView) {
         DailyRemindersFragment.parentView = parentView;
@@ -101,8 +116,15 @@ public class DailyRemindersFragment extends Fragment implements View.OnClickList
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-        restoreReminders();
-
+        Runnable r = new Runnable() {
+            @Override
+            public void run() {
+                FragmentTransaction fragmentTransaction = getParentFragmentManager().beginTransaction();
+                fragmentTransaction.add(R.id.updated_view_container, defaultFragment).commit();
+            }
+        };
+        Thread thread = new Thread(r);
+        thread.start();
     }
 
     @Override
@@ -116,41 +138,43 @@ public class DailyRemindersFragment extends Fragment implements View.OnClickList
 
     private void createAndInitContent(final View view) {
         context = view.getContext();
-        dccFragment = new ReminderDCC();
-        reviewFragment = new ReminderReview();
-        RecyclerItemAdapter.setReviewFragment(reviewFragment);
-        ShablonFragment.addFragments(getParentFragmentManager(), dccFragment, reviewFragment);
-        RecyclerItemAdapter.setFragmentManager(getParentFragmentManager());
-        /*LinearLayout navigationLayout = view.findViewById(R.id.navigationLayout);
-        toDailyFragmentButton = navigationLayout.findViewById(R.id.dailyFragmentButton);
-        toStudyFragmentButton = navigationLayout.findViewById(R.id.studyFragmentButton);
-        toActivitiesFragmentButton = navigationLayout.findViewById(R.id.activitiesFragmentButton);
-        toCarWashFragmentButton = navigationLayout.findViewById(R.id.carWashFragmentButton);
-        toStudyFragmentButton.setOnClickListener(this);
-        toActivitiesFragmentButton.setOnClickListener(this);
-        toCarWashFragmentButton.setOnClickListener(this);*/
-        rList = (RecyclerView) view.findViewById(R.id.item_layout);
-        rList.setLayoutManager(new LinearLayoutManager(context));
-        rList.setAdapter(adapter);
-        itemTouchHelper = Listeners.setSimpleItemTouchCallback(context, getParentFragment().getView(), adapter, titles, dao);
-        itemTouchHelper.attachToRecyclerView(rList);
+        frameLayout = (FrameLayout) view.findViewById(R.id.updated_view_container);
+        img = view.findViewById(R.id.empty_imageView);
+        progressBar = view.findViewById(R.id.default_d_d_progress_bar);
+        progressBar.animate();
         addButton = (FloatingActionButton) view.findViewById(R.id.add_item);
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                System.out.println("2");
-                ShablonFragment.showOrHideFragment(getParentFragmentManager(), dccFragment, true);
+                ShablonFragment.showOrHideFragment(getParentFragmentManager(), dccFragment, (ShablonFragment) getParentFragment(),true);
             }
         });
+        ShablonFragment.setParentManager(getParentFragmentManager());
 
     }
 
-    private void restoreReminders() {
+    public static void setAlternativeView(boolean isUpdated, FragmentManager parentManager) {
+        FragmentTransaction parentTransaction = parentManager.beginTransaction();
+        if (isUpdated) {
+            parentTransaction.replace(R.id.updated_view_container, DailyRemindersFragment.defaultFragment).commit();
+        } else {
+            Runnable r = new Runnable() {
+                @Override
+                public void run() {
+                    DailyRemindersFragment.defaultFragment.initDefaultRV();
+                }
+            };
+            ExecutorService executorService = Executors.newCachedThreadPool();
+            executorService.submit(r);
+            executorService.shutdown();
+            parentTransaction.replace(R.id.updated_view_container, DailyRemindersFragment.alternativeFragment).commit();
+        }
+    }
+    /*  public void restoreReminders() {
         db = Room.databaseBuilder(context, RemDatabase.class, "remind_database").build();
         dao = db.reminderDao();
         titles = ReminderEntity.getTitlesFromDatabase(dao);
-        List<ReminderEntity> reminderEntityList = ReminderEntity.getAll(dao);
-        System.out.println(reminderEntityList);
+        reminderEntityList = ReminderEntity.getAll(dao);
         savedReminder = new SavedReminder(context);
         adapter = new RecyclerItemAdapter(context, dao, titles, reminderEntityList);
         ReminderReview.setContext(context);
@@ -161,12 +185,13 @@ public class DailyRemindersFragment extends Fragment implements View.OnClickList
         ReminderDCC.setAdapter(adapter);
         ReminderDCC.setDao(dao);
         ReminderDCC.setIsFirstItem(titles.size()==0);
-       /* ReminderOptions.setContext(context);
+        NotificationService.setAdapter(adapter);
+        //ReminderOptions.setContext(context);
         ReminderOptions.setAdapter(adapter);
         ReminderOptions.setDao(dao);
-        ReminderOptions.setIsFirstItem(titles.size()==0);*/
+        ReminderOptions.setIsFirstItem(titles.size()==0);
     }
-
+*/
 
     @Nullable
     @Override
@@ -189,5 +214,30 @@ public class DailyRemindersFragment extends Fragment implements View.OnClickList
         if (v == toActivitiesFragmentButton) {
             Navigation.findNavController(getView()).navigate(R.id.action_dailyRemindersFragment_to_activitiesFragment2);
         }*/
+    }
+
+    public static void setDccFragment(ReminderDCC dccFragment) {
+        DailyRemindersFragment.dccFragment = dccFragment;
+        System.out.println(dccFragment);
+    }
+
+    public static void setDefaultFragment(DefaultDailyDealsContainerFragment defaultFragment) {
+        DailyRemindersFragment.defaultFragment = defaultFragment;
+    }
+
+    public static void setAlternativeFragment(AlternativeDailyDealsContainerFragment alternativeFragment) {
+        DailyRemindersFragment.alternativeFragment = alternativeFragment;
+    }
+
+    public static void removeProgressBar() {
+        DailyRemindersFragment.frameLayout.removeView(DailyRemindersFragment.progressBar);
+    }
+
+    public static void setEmptyContainerImage(boolean isVisible) {
+        if (isVisible) {
+            DailyRemindersFragment.img.animate().alpha(1).setDuration(500).start();
+        } else {
+            DailyRemindersFragment.img.animate().alpha(0).setDuration(500).start();
+        }
     }
 }

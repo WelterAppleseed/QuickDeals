@@ -6,15 +6,26 @@
     tools:context=".study.StudyFragment">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/grid_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="std" />
-   <!-- <include
-        android:id="@+id/navigationLayout"
-        layout="@layout/navigation_fragment"
-        android:layout_width="match_parent"
+        />
+
+    <!-- <include
+         android:id="@+id/navigationLayout"
+         layout="@layout/navigation_fragment"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:layout_gravity="bottom" />-->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/add_grid_item"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom" />-->
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="10dp"
+        android:clickable="true"
+        android:src="@android:drawable/ic_input_add" />
 
 </FrameLayout>

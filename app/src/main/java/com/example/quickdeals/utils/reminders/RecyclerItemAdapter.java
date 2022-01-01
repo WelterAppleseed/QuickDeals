@@ -1,6 +1,8 @@
 package com.example.quickdeals.utils.reminders;
 
+import android.animation.Animator;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.transition.TransitionInflater;
@@ -8,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -15,15 +18,17 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.quickdeals.MainActivity;
 import com.example.quickdeals.R;
 import com.example.quickdeals.ReminderReview;
 import com.example.quickdeals.ShablonFragment;
-import com.example.quickdeals.database.ReminderData;
-import com.example.quickdeals.database.dao.ReminderDao;
-import com.example.quickdeals.database.entity.ReminderEntity;
+import com.example.quickdeals.daily.DailyRemindersFragment;
+import com.example.quickdeals.daily.container.DefaultDailyDealsContainerFragment;
+import com.example.quickdeals.database.temporary.ReminderData;
+import com.example.quickdeals.database.temporary.dao.ReminderDao;
+import com.example.quickdeals.database.temporary.entity.ReminderEntity;
 import com.example.quickdeals.utils.states.States;
 
 import java.util.ArrayList;
@@ -36,7 +41,7 @@ public class RecyclerItemAdapter extends RecyclerView.Adapter<RecyclerItemAdapte
     public int count, next, changeInt, newDataInt, restorePosition, purposeCode;
     private View item;
     private ReminderDao dao;
-    private static ShablonFragment parentFragment;
+    private static ShablonFragment shablonFragment;
     private static ReminderReview reminderReview;
     private List<ReminderEntity> reminderDataList;
     private static FragmentManager fragmentManager;
@@ -47,6 +52,10 @@ public class RecyclerItemAdapter extends RecyclerView.Adapter<RecyclerItemAdapte
         this.items = items;
         this.dao = dao;
         this.reminderDataList = reminderDataList;
+        if (getItemCount() == 0) {
+            DailyRemindersFragment.removeProgressBar();
+            DailyRemindersFragment.setEmptyContainerImage(true);
+        }
     }
 
     @NonNull
@@ -85,11 +94,15 @@ public class RecyclerItemAdapter extends RecyclerView.Adapter<RecyclerItemAdapte
                 break;
             }
         }
-        System.out.println(holder.currentReminderData.month);
+        System.out.println(getItemCount() + " " + position);
         holder.title.setText(holder.currentReminderData.title);
         holder.desc.setText(holder.currentReminderData.desc);
         holder.icon.setImageResource(States.getIcon(holder.currentReminderData.icon));
         holder.time.setText(States.getTime(null, holder.currentReminderData.day, States.getMonth(holder.currentReminderData.month, true), holder.currentReminderData.hours, holder.currentReminderData.minutes, false));
+        if (position == getItemCount()-1) {
+            DailyRemindersFragment.removeProgressBar();
+            DailyRemindersFragment.setEmptyContainerImage(items.isEmpty()   );
+        }
     }
 
     @Override
@@ -117,7 +130,7 @@ public class RecyclerItemAdapter extends RecyclerView.Adapter<RecyclerItemAdapte
             viewBackground = itemView.findViewById(R.id.view_background);
             viewForeground = itemView.findViewById(R.id.view_foreground);
             if (purposeCode == 0) {
-                currentReminderData = reminderDataList.get(count);
+                currentReminderData = reminderDataList.get(count);//TODO//TODO//TODO//TODO//TODO//TODO//TODO//TODO//TODO//TODO//TODO//TODO//TODO//TODO//TODO//TODO//TODO
                 Log.i("State", "Restoring. Initializing title is " + currentReminderData.title + " with purposeCode " + purposeCode);
             }
             itemView.setOnClickListener(new View.OnClickListener() {
@@ -125,16 +138,17 @@ public class RecyclerItemAdapter extends RecyclerView.Adapter<RecyclerItemAdapte
                 public void onClick(View v) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                         TextView titleTextView = v.findViewById(R.id.rem_title);
-                        parentFragment.setSharedElementReturnTransition(TransitionInflater.from(parentFragment.getActivity()).inflateTransition(R.transition.change_image_transform));
-                        parentFragment.setExitTransition(TransitionInflater.from(parentFragment.getActivity()).inflateTransition(android.R.transition.slide_top));
+                        shablonFragment.setSharedElementReturnTransition(TransitionInflater.from(shablonFragment.getActivity()).inflateTransition(R.transition.change_image_transform));
+                        //shablonFragment.setExitTransition(TransitionInflater.from(shablonFragment.getActivity()).inflateTransition(android.R.transition.slide_top));
                         reminderReview.setNewArgs(getBundlesFrom(titleTextView.getText().toString()), items.indexOf(titleTextView.getText().toString()));
-                        reminderReview.setSharedElementEnterTransition(TransitionInflater.from(parentFragment.getActivity()).inflateTransition(R.transition.change_image_transform));
-                        reminderReview.setEnterTransition(TransitionInflater.from(parentFragment.getActivity()).inflateTransition(android.R.transition.slide_top));
-                        fragmentManager.beginTransaction()
+                        reminderReview.setSharedElementEnterTransition(TransitionInflater.from(shablonFragment.getActivity()).inflateTransition(R.transition.change_image_transform));
+                        //reminderReview.setEnterTransition(TransitionInflater.from(shablonFragment.getActivity()).inflateTransition(android.R.transition.slide_top));
+                        ShablonFragment.showOrHideFragment(fragmentManager, reminderReview, shablonFragment, true);
+                       /* fragmentManager.beginTransaction()
+                                .setCustomAnimations(R.anim.enter, R.anim.exit)
                                 .show(reminderReview)
                                 .addToBackStack("transaction")
-                                .addSharedElement(icon, "rem_icon_t")
-                                .commit();
+                                .commit();*/
                     }
                 }
             });
@@ -153,9 +167,25 @@ public class RecyclerItemAdapter extends RecyclerView.Adapter<RecyclerItemAdapte
         reminderDataList.remove(position);
         notifyItemRemoved(position);
         notifyItemRangeRemoved(position, items.size());
+        if (items.isEmpty()) {
+            DailyRemindersFragment.setEmptyContainerImage(true);
+        }
         Log.i("RemoveItem: ", String.valueOf(items));
     }
-
+    public void removeFromList(String title) {
+        purposeCode = 1;
+        count = 0;
+        int position = items.indexOf(title);
+        next = position;
+        items.remove(title);
+        reminderDataList.remove(position);
+        notifyItemRemoved(position);
+        notifyItemRangeRemoved(position, items.size());
+        if (items.isEmpty()) {
+            DailyRemindersFragment.setEmptyContainerImage(true);
+        }
+        Log.i("RemoveItem: ", String.valueOf(items));
+    }
     public void add(String title) {
         purposeCode = 2;
         count = items.size();
@@ -163,6 +193,7 @@ public class RecyclerItemAdapter extends RecyclerView.Adapter<RecyclerItemAdapte
         newDataInt = items.size() - 1;
         notifyItemInserted(items.size() - 1);
         notifyItemRangeInserted(items.size() - 1, items.size());
+        DefaultDailyDealsContainerFragment.setAdapter(this);
         Log.i("AddItem: ", String.valueOf(items));
     }
 
@@ -194,10 +225,9 @@ public class RecyclerItemAdapter extends RecyclerView.Adapter<RecyclerItemAdapte
         RecyclerItemAdapter.fragmentManager = fragmentManager;
     }
 
-    public static void setParentFragment(ShablonFragment parentFragment) {
-        RecyclerItemAdapter.parentFragment = parentFragment;
+    public static void setShablonFragment(ShablonFragment shablonFragment) {
+        RecyclerItemAdapter.shablonFragment = shablonFragment;
     }
-
     public static void setReviewFragment(ReminderReview reviewFragment) {
         RecyclerItemAdapter.reminderReview = reviewFragment;
     }

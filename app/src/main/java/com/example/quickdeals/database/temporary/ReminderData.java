@@ -1,8 +1,8 @@
-package com.example.quickdeals.database;
+package com.example.quickdeals.database.temporary;
 
 import androidx.annotation.Nullable;
 
-import com.example.quickdeals.database.entity.ReminderEntity;
+import com.example.quickdeals.database.temporary.entity.ReminderEntity;
 
 public class ReminderData {
     private String title;

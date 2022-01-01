@@ -1,28 +1,23 @@
-package com.example.quickdeals.database.entity;
+package com.example.quickdeals.database.timeless.entity;
 
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-import com.example.quickdeals.database.RemDatabase;
-import com.example.quickdeals.database.ReminderData;
-import com.example.quickdeals.database.dao.ReminderDao;
+import com.example.quickdeals.database.timeless.TimelessReminderData;
+import com.example.quickdeals.database.timeless.dao.TimelessReminderDao;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.concurrent.ScheduledExecutorService;
 
 @Entity
-public class ReminderEntity {
+public class TimelessReminderEntity {
     @PrimaryKey(autoGenerate = true)
     public int count;
     @NonNull
@@ -32,28 +27,26 @@ public class ReminderEntity {
     public String desc;
     @ColumnInfo(name = "icon")
     public int icon;
-    @ColumnInfo(name = "year")
-    public int year;
-
-    @ColumnInfo(name = "month")
-    public int month;
-
-    @ColumnInfo(name = "day")
-    public int day;
-
+    @ColumnInfo(name = "monday")
+    public boolean mon;
+    @ColumnInfo(name = "tuesday")
+    public boolean tue;
+    @ColumnInfo(name = "wednesday")
+    public boolean wed;
+    @ColumnInfo(name = "thursday")
+    public boolean thu;
+    @ColumnInfo(name = "friday")
+    public boolean fri;
+    @ColumnInfo(name = "saturday")
+    public boolean sat;
+    @ColumnInfo(name = "sunday")
+    public boolean sun;
     @ColumnInfo(name = "hours")
     public int hours;
-
     @ColumnInfo(name = "minutes")
     public int minutes;
 
-    @ColumnInfo(name = "repeat")
-    public boolean repeat;
-
-    @ColumnInfo(name = "alarm")
-    public boolean alarm;
-
-    public static void addToDatabase(final ReminderData entity, final ReminderDao dao) {
+    public static void addToDatabase(final TimelessReminderData entity, final TimelessReminderDao dao) {
         System.out.println(dao);
         Runnable r = new Runnable() {
             @Override
@@ -70,7 +63,29 @@ public class ReminderEntity {
         Log.i("State:", "Complete.");
         executorService.shutdown();
     }
-    public static List<String> getTitlesFromDatabase(final ReminderDao dao) {
+    public static boolean[] getSelectedWeekDays(final TimelessReminderData entity) {
+        final boolean [] weekPosition = new boolean[7];
+        Runnable r = new Runnable() {
+            @Override
+            public void run() {
+                weekPosition[0] = (entity.isMonday());
+                weekPosition[1] = (entity.isTuesday());
+                weekPosition[2] = (entity.isWednesday());
+                weekPosition[3] = (entity.isThursday());
+                weekPosition[4] = (entity.isFriday());
+                weekPosition[5] = (entity.isSaturday());
+                weekPosition[6] = (entity.isSunday());
+            }
+        };
+        ExecutorService executorService = Executors.newCachedThreadPool();
+        Future future = executorService.submit(r);
+        while (!future.isDone()) {
+        }
+        Log.i("State:", "Complete.");
+        executorService.shutdown();
+        return weekPosition;
+    }
+    public static List<String> getTitlesFromDatabase(final TimelessReminderDao dao) {
         final List<String> titleList = new ArrayList<>();
         Runnable r = new Runnable() {
             @Override
@@ -79,10 +94,10 @@ public class ReminderEntity {
                     List<String> titles = dao.getTitles();
                     titleList.addAll(titles);
                     Log.i("Titles", "Gotten list of titles is: " + titles);
-            } else {
+                } else {
                     Log.e("Titles", "List of titles is null.");
                 }
-        }
+            }
         };
         ExecutorService executorService = Executors.newCachedThreadPool();
         Future future = executorService.submit(r);
@@ -92,18 +107,18 @@ public class ReminderEntity {
         executorService.shutdown();
         return titleList;
     }
-    public static ReminderData getEntity(final ReminderDao dao, final String title) {
-        final ReminderData[] entity = {null};
+    public static TimelessReminderData getEntity(final TimelessReminderDao dao, final String title) {
+        final TimelessReminderData[] entity = {null};
         Runnable r = new Runnable() {
             @Override
             public void run() {
                 if (title!= null) {
-                entity[0] = dao.getInfo(title);
-                Log.i("Title", "Gotten entity is: " + String.valueOf(entity[0].getTitle()));
-            } else {
+                    entity[0] = dao.getInfo(title);
+                    Log.i("Title", "Gotten entity is: " + String.valueOf(entity[0].getTitle()));
+                } else {
 
                 }
-                }
+            }
         };
         ExecutorService executorService = Executors.newCachedThreadPool();
         Future future = executorService.submit(r);
@@ -113,7 +128,7 @@ public class ReminderEntity {
         executorService.shutdown();
         return entity[0];
     }
-    public static void deleteFromDatabase(final ReminderData entity, final ReminderDao dao) {
+    public static void deleteFromDatabase(final TimelessReminderData entity, final TimelessReminderDao dao) {
         Runnable r = new Runnable() {
             @Override
             public void run() {
@@ -127,8 +142,8 @@ public class ReminderEntity {
         }
         executorService.shutdown();
     }
-    public static List<ReminderEntity> getAll(final ReminderDao dao) {
-        final List<ReminderEntity>[] list = new List[]{new ArrayList<>()};
+    public static List<TimelessReminderEntity> getAll(final TimelessReminderDao dao) {
+        final List<TimelessReminderEntity>[] list = new List[]{new ArrayList<>()};
         Runnable r = new Runnable() {
             @Override
             public void run() {
@@ -144,7 +159,7 @@ public class ReminderEntity {
         executorService.shutdown();
         return list[0];
     }
-    public static void update(final ReminderDao dao, final ReminderData data) {
+    public static void update(final TimelessReminderDao dao, final TimelessReminderData data) {
         Runnable r = new Runnable() {
             @Override
             public void run() {
@@ -159,7 +174,7 @@ public class ReminderEntity {
         Log.i("State:", "Complete.");
         executorService.shutdown();
     }
-    public static void clearAll(final ReminderDao dao) {
+    public static void clearAll(final TimelessReminderDao dao) {
         Runnable r = new Runnable() {
             @Override
             public void run() {

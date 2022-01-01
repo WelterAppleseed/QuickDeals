@@ -107,4 +107,27 @@
         android:name="com.example.quickdeals.ReminderReview"
         android:label="fragment_reminder_review"
         tools:layout="@layout/fragment_reminder_review" />
+    <fragment
+        android:id="@+id/alternativeDailyDealsRemindersFragment"
+        android:name="com.example.quickdeals.daily.container.AlternativeDailyDealsContainerFragment"
+        android:label="fragment_alternative_daily_deals_reminders"
+        tools:layout="@layout/fragment_alternative_daily_deals_reminders" >
+        <action
+            android:id="@+id/action_alternativeDailyDealsRemindersFragment_to_defaultDailyDealsContainerFragment"
+            app:destination="@id/defaultDailyDealsContainerFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/defaultDailyDealsContainerFragment"
+        android:name="com.example.quickdeals.daily.container.DefaultDailyDealsContainerFragment"
+        android:label="fragment_default_daily_deals_container"
+        tools:layout="@layout/fragment_default_daily_deals_container" >
+        <action
+            android:id="@+id/action_defaultDailyDealsContainerFragment_to_alternativeDailyDealsRemindersFragment"
+            app:destination="@id/alternativeDailyDealsRemindersFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/timelessReminderDCC"
+        android:name="com.example.quickdeals.study.TimelessReminderDCC"
+        android:label="fragment_timeless_reminder_d_c_c"
+        tools:layout="@layout/fragment_timeless_reminder_d_c_c" />
 </navigation>

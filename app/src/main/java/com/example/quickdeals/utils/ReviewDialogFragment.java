@@ -22,9 +22,9 @@ import androidx.fragment.app.DialogFragment;
 import com.example.quickdeals.R;
 import com.example.quickdeals.daily.actions.ReminderActions;
 import com.example.quickdeals.daily.adapter_and_activity.TypeOfActivityAdapter;
-import com.example.quickdeals.database.ReminderData;
-import com.example.quickdeals.database.dao.ReminderDao;
-import com.example.quickdeals.database.entity.ReminderEntity;
+import com.example.quickdeals.database.temporary.ReminderData;
+import com.example.quickdeals.database.temporary.dao.ReminderDao;
+import com.example.quickdeals.database.temporary.entity.ReminderEntity;
 import com.example.quickdeals.utils.reminders.RecyclerItemAdapter;
 import com.example.quickdeals.utils.states.States;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -121,12 +121,6 @@ public class ReviewDialogFragment extends DialogFragment implements View.OnClick
         titleEVState = view.findViewById(R.id.reminder_title);
         descEVState = view.findViewById(R.id.reminder_desc);
         timeTVState = view.findViewById(R.id.time);
-        informOnceTV = view.findViewById(R.id.inform_once_tv);
-        informBCTV = view.findViewById(R.id.inform_bc_tv);
-        alarmNTV = view.findViewById(R.id.alarm_n);
-        alarmYTV = view.findViewById(R.id.alarm_y);
-        okB = view.findViewById(R.id.ok_b);
-        backB = view.findViewById(R.id.back_b);
         //blow variables
         title = getArguments().getString(TITLE);
         description = getArguments().getString(DESC);

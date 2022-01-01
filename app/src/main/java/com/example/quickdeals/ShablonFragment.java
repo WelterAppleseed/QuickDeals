@@ -1,5 +1,6 @@
 package com.example.quickdeals;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -10,8 +11,10 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.room.Room;
+import androidx.room.RoomDatabase;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.transition.TransitionInflater;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -26,9 +29,18 @@ import android.widget.LinearLayout;
 import androidx.appcompat.widget.Toolbar;
 
 import com.example.quickdeals.daily.DailyRemindersFragment;
-import com.example.quickdeals.database.RemDatabase;
+import com.example.quickdeals.daily.container.AlternativeDailyDealsContainerFragment;
+import com.example.quickdeals.daily.container.DefaultDailyDealsContainerFragment;
+import com.example.quickdeals.database.temporary.RemDatabase;
+import com.example.quickdeals.database.timeless.TimelessRemDatabase;
 import com.example.quickdeals.navigation.ViewPagerAdapter;
+import com.example.quickdeals.study.StudyFragment;
+import com.example.quickdeals.study.TimelessReminderDCC;
+import com.example.quickdeals.study.TimelessReminderReview;
+import com.example.quickdeals.study.adapter.GridRecyclerViewAdapter;
+import com.example.quickdeals.utils.Listeners;
 import com.example.quickdeals.utils.reminders.RecyclerItemAdapter;
+import com.google.android.material.snackbar.Snackbar;
 
 
 /**
@@ -55,6 +67,11 @@ public class ShablonFragment extends Fragment implements View.OnClickListener {
     private LinearLayout navigationLayout;
     private FrameLayout deletePane;
     private View view;
+    private static FragmentManager parentManager;
+    private static boolean isUpdated;
+    private static Context context;
+    private DefaultDailyDealsContainerFragment dFragment;
+    private AlternativeDailyDealsContainerFragment aFragment;
 
     public ShablonFragment() {
         // Required empty public constructor
@@ -77,12 +94,14 @@ public class ShablonFragment extends Fragment implements View.OnClickListener {
         fragment.setArguments(args);
         return fragment;
     }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.i("Menu", "Menu is built in onCreate");
         setHasOptionsMenu(true);
         setMenuVisibility(true);
+        initDatabases();
     }
 
     @Override
@@ -103,7 +122,8 @@ public class ShablonFragment extends Fragment implements View.OnClickListener {
         initNavigationLayout();
         viewPager.setAdapter(new ViewPagerAdapter(this));
         DailyRemindersFragment.setParentView(view);
-        RecyclerItemAdapter.setParentFragment(this);
+        RecyclerItemAdapter.setShablonFragment(this);
+
         return view;
     }
 
@@ -129,6 +149,11 @@ public class ShablonFragment extends Fragment implements View.OnClickListener {
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.action_edit:
+                if (Listeners.snackbar != null && Listeners.snackbar.isShown()) {
+                    Listeners.snackbar.setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE).dismiss();
+                }
+                DailyRemindersFragment.setAlternativeView(isUpdated, parentManager);
+                isUpdated = !isUpdated;
                 Log.i("Menu", "Edit.");
                 return true;
             case R.id.action_delete:
@@ -158,23 +183,66 @@ public class ShablonFragment extends Fragment implements View.OnClickListener {
         } else {
             numOfFragment = 3;
         }
+        if (Listeners.snackbar != null && Listeners.snackbar.isShown()) {
+            Listeners.snackbar.setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE).dismiss();
+        }
         viewPager.setCurrentItem(numOfFragment);
+
     }
+    private void initDatabases() {
+        RemDatabase db = Room.databaseBuilder(context, RemDatabase.class, "remind_database").build();
+        AlternativeDailyDealsContainerFragment.setDb(db);
+        AlternativeDailyDealsContainerFragment.setParent(getChildFragmentManager());
+        DefaultDailyDealsContainerFragment.setDb(db);
+        DefaultDailyDealsContainerFragment.setParent(getChildFragmentManager());
+        aFragment = AlternativeDailyDealsContainerFragment.newInstance();
+        dFragment = DefaultDailyDealsContainerFragment.newInstance();
+        DailyRemindersFragment.setDefaultFragment(dFragment);
+        DailyRemindersFragment.setAlternativeFragment(aFragment);
+
+        TimelessRemDatabase tdb = Room.databaseBuilder(context, TimelessRemDatabase.class, "timeless_remind_database").build();
+        TimelessReminderDCC.setContext(context);
+        TimelessReminderDCC.setTimelessReminderDao(tdb.timelessReminderDao());
+        TimelessReminderReview.setContext(context);
+        TimelessReminderReview.setTimelessReminderDao(tdb.timelessReminderDao());
+        GridRecyclerViewAdapter.setShablonFragment(this);
+        StudyFragment.initRecyclerList(tdb);
+    }
+
     public static void addFragments(FragmentManager parentManager, ReminderDCC fragment1, ReminderReview fragment2) {
         FragmentTransaction transaction = parentManager.beginTransaction();
         transaction.replace(R.id.dcc_container, fragment1, "dcc_fragment").hide(fragment1).replace(R.id.review_container, fragment2, "review_edit_fragment").hide(fragment2).commit();
     }
-
-    public static void showOrHideFragment(FragmentManager parentManager, Fragment fragment, boolean show) {
+    public static void addTimelessFragments(FragmentManager parentManager, TimelessReminderDCC tdccFragment, TimelessReminderReview treviewFragment) {
         FragmentTransaction transaction = parentManager.beginTransaction();
+        transaction.replace(R.id.tdcc_container, tdccFragment, "tdcc_fragment").hide(tdccFragment).replace(R.id.treview_container, treviewFragment, "treview_edit_fragment").hide(treviewFragment).commit();
+    }
+
+    public static void showOrHideFragment(FragmentManager parentManager, Fragment fragment, ShablonFragment shablonFragment, boolean show) {
+        FragmentTransaction transaction = parentManager.beginTransaction();
+        transaction.setCustomAnimations(0, R.anim.exit, R.anim.enter, 0);
         if (show) {
             transaction.show(fragment).commit();
         } else {
             transaction.hide(fragment).commit();
         }
     }
+
+    public static void moveToFragment(FragmentManager parentManager, Fragment fragment) {
+        FragmentTransaction transaction = parentManager.beginTransaction();
+        transaction.replace(R.id.item_containter, fragment, "alt_daily_deals_view").commit();
+    }
+
     public void start(ReminderReview dcc) {
         Intent intent = new Intent(dcc.getContext(), MainActivity.class);
         startActivity(intent);
+    }
+
+    public static void setParentManager(FragmentManager parentManager) {
+        ShablonFragment.parentManager = parentManager;
+    }
+
+    public static void setContext(Context context) {
+        ShablonFragment.context = context;
     }
 }

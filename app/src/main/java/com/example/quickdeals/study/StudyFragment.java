@@ -1,9 +1,13 @@
 package com.example.quickdeals.study;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,8 +20,22 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 import com.example.quickdeals.R;
+import com.example.quickdeals.ShablonFragment;
 import com.example.quickdeals.daily.DailyRemindersFragment;
+import com.example.quickdeals.database.timeless.TimelessRemDatabase;
+import com.example.quickdeals.database.timeless.dao.TimelessReminderDao;
+import com.example.quickdeals.database.timeless.entity.TimelessReminderEntity;
 import com.example.quickdeals.navigation.NavigationLayout;
+import com.example.quickdeals.start.StartFragment;
+import com.example.quickdeals.study.adapter.GridRecyclerViewAdapter;
+import com.example.quickdeals.study.item_data.GridItemData;
+import com.example.quickdeals.utils.Listeners;
+import com.example.quickdeals.utils.states.States;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import java.sql.Time;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -30,6 +48,16 @@ public class StudyFragment extends Fragment implements View.OnClickListener {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private static List<TimelessReminderEntity> recyclerDataArrayList;
+    private static GridRecyclerViewAdapter adapter;
+    private TimelessReminderDCC timelessReminderDCC;
+    private TimelessReminderReview timelessReminderReview;
+    private static GridLayoutManager layoutManager;
+    private FloatingActionButton addButton;
+    private static List<String> items;
+    private Context context;
+    private ItemTouchHelper itemTouchHelper;
+    private static TimelessReminderDao timelessReminderDao;
 
     // TODO: Rename and change types of parameters
    /* private ImageButton toStudyFragmentButton;
@@ -70,14 +98,27 @@ public class StudyFragment extends Fragment implements View.OnClickListener {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_study, container, false);
-        /*LinearLayout navigationLayout = view.findViewById(R.id.navigationLayout);
-        toDailyFragmentButton = navigationLayout.findViewById(R.id.dailyFragmentButton);
-        toStudyFragmentButton = navigationLayout.findViewById(R.id.studyFragmentButton);
-        toActivitiesFragmentButton = navigationLayout.findViewById(R.id.activitiesFragmentButton);
-        toCarWashFragmentButton = navigationLayout.findViewById(R.id.carWashFragmentButton);
-        toDailyFragmentButton.setOnClickListener(this);
-        toCarWashFragmentButton.setOnClickListener(this);
-        toActivitiesFragmentButton.setOnClickListener(this);*/
+        RecyclerView recyclerView= view.findViewById(R.id.grid_recycler_view);
+        timelessReminderDCC = new TimelessReminderDCC();
+        timelessReminderReview = new TimelessReminderReview();
+        GridRecyclerViewAdapter.setTimelessReminderReview(timelessReminderReview);
+        GridRecyclerViewAdapter.setFragmentManager(getParentFragmentManager());
+        ShablonFragment.addTimelessFragments(getParentFragmentManager(), timelessReminderDCC, timelessReminderReview);
+        adapter = new GridRecyclerViewAdapter(StudyFragment.recyclerDataArrayList, items, this.getContext());
+        TimelessReminderDCC.setAdapter(adapter);
+        TimelessReminderReview.setAdapter(adapter);
+        layoutManager = new GridLayoutManager(this.getContext(),2);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(adapter);
+        itemTouchHelper = Listeners.setSimpleItemTouchCallback(getParentFragment().getView(), adapter, items, timelessReminderDao);
+        itemTouchHelper.attachToRecyclerView(recyclerView);
+        addButton = view.findViewById(R.id.add_grid_item);
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ShablonFragment.showOrHideFragment(getParentFragmentManager(), timelessReminderDCC, (ShablonFragment) getParentFragment(),true);
+            }
+        });
         return view;
     }
 
@@ -92,5 +133,17 @@ public class StudyFragment extends Fragment implements View.OnClickListener {
         if (v == toDailyFragmentButton) {
             Navigation.findNavController(getView()).navigate(R.id.action_studyFragment2_to_dailyRemindersFragment);
         }*/
+    }
+    public static void initRecyclerList(TimelessRemDatabase tdb) {
+        TimelessReminderDao tdao = tdb.timelessReminderDao();
+        List<String> titles = TimelessReminderEntity.getTitlesFromDatabase(tdao);
+        System.out.println(titles);
+        StudyFragment.recyclerDataArrayList =  TimelessReminderEntity.getAll(tdao);
+        StudyFragment.items = titles;
+        StudyFragment.timelessReminderDao = tdao;
+        GridRecyclerViewAdapter.setTimelessReminderDao(tdao);
+    }
+    public void setContext(Context context) {
+        this.context = context;
     }
 }

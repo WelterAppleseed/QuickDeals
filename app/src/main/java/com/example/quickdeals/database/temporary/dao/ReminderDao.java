@@ -1,4 +1,4 @@
-package com.example.quickdeals.database.dao;
+package com.example.quickdeals.database.temporary.dao;
 
 import androidx.room.Dao;
 import androidx.room.Delete;
@@ -6,8 +6,8 @@ import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
 
-import com.example.quickdeals.database.ReminderData;
-import com.example.quickdeals.database.entity.ReminderEntity;
+import com.example.quickdeals.database.temporary.ReminderData;
+import com.example.quickdeals.database.temporary.entity.ReminderEntity;
 
 import java.util.List;
 

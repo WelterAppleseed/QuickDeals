@@ -12,13 +12,13 @@ import android.widget.LinearLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.room.Database;
-import androidx.room.Room;
 
 import com.example.quickdeals.daily.DailyRemindersFragment;
 import com.example.quickdeals.daily.actions.ReminderActions;
-import com.example.quickdeals.database.RemDatabase;
-import com.example.quickdeals.database.entity.ReminderEntity;
+import com.example.quickdeals.daily.container.AlternativeDailyDealsContainerFragment;
+import com.example.quickdeals.daily.container.DefaultDailyDealsContainerFragment;
+import com.example.quickdeals.daily.dialog.notifications.AlarmManagerBroadcastReceiver;
+import com.example.quickdeals.daily.dialog.notifications.NotificationService;
 import com.example.quickdeals.utils.Listeners;
 import com.example.quickdeals.daily.dialog.notifications.NotificationCreator;
 import com.example.quickdeals.daily.ReminderInitializer;
@@ -45,12 +45,14 @@ public class MainActivity extends AppCompatActivity {
     private static final int NOTIFY_ID = 101;
     private PendingIntent pendingIntent;
     private NotificationCreator notificationCreator;
-    private static final String SHARED_PREFERENCES_NAME = "items";
+    private static final String IS_WORKING = "is_working";
     private ConstraintLayout layout;
-    private SharedPreferences preferences;
+    private SharedPreferences.Editor editor;
     private SavedReminder reminders;
     private List<String> items;
     private Intent changeReminder;
+    private static DefaultDailyDealsContainerFragment frag;
+    public static boolean working;
     ArrayList<States> states;
 
     public MainActivity() {
@@ -61,13 +63,21 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         DailyRemindersFragment.setContext(MainActivity.this);
+        DefaultDailyDealsContainerFragment.setContext(MainActivity.this);
+        AlternativeDailyDealsContainerFragment.setContext(MainActivity.this);
+        NotificationService.setActivity(MainActivity.this);
+        ShablonFragment.setContext(MainActivity.this);
         //setInitialData();
         //inflater = LayoutInflater.from(MainActivity.this);
         //restoreReminders();
         //contentCreate();
 
     }
-
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        AlarmManagerBroadcastReceiver.isWorking = hasFocus;
+        super.onWindowFocusChanged(hasFocus);
+    }
     /* private void setInitialData(){
         states = new ArrayList<State>();
         changeReminder = new Intent(MainActivity.this, RemindersOptions.class);
@@ -114,5 +124,4 @@ public class MainActivity extends AppCompatActivity {
         manager.set(AlarmManager.RTC_WAKEUP, cal_alarm.getTimeInMillis(), pendingIntent);
     }
 */
-
 }

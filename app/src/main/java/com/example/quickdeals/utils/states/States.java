@@ -10,7 +10,7 @@ import java.util.ArrayList;
 public class States {
     private static final int[] icons = {R.drawable.default_icon, R.drawable.sport_icon, R.drawable.fun_icon, R.drawable.work_icon, R.drawable.hobby_icon};
     private static final String[] months = {"Zero Month", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
-
+    private static final String[] week = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun", "fds"};
     public static int getIcon(int i) {
         return icons[i];
     }
@@ -29,5 +29,8 @@ public class States {
         } else {
             return months[i];
         }
+    }
+    public static String getWeekDay(int i) {
+        return week[i];
     }
 }

@@ -31,9 +31,9 @@ import android.widget.TimePicker;
 import com.example.quickdeals.daily.actions.ReminderActions;
 import com.example.quickdeals.daily.adapter_and_activity.TypeOfActivityAdapter;
 import com.example.quickdeals.daily.dialog.notifications.AlarmManagerBroadcastReceiver;
-import com.example.quickdeals.database.ReminderData;
-import com.example.quickdeals.database.dao.ReminderDao;
-import com.example.quickdeals.database.entity.ReminderEntity;
+import com.example.quickdeals.database.temporary.ReminderData;
+import com.example.quickdeals.database.temporary.dao.ReminderDao;
+import com.example.quickdeals.database.temporary.entity.ReminderEntity;
 import com.example.quickdeals.utils.CompoundListeners;
 import com.example.quickdeals.utils.Utils;
 import com.example.quickdeals.utils.reminders.RecyclerItemAdapter;
@@ -44,8 +44,6 @@ import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
 
-import org.threeten.bp.DateTimeUtils;
-import org.threeten.bp.DayOfWeek;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.ZoneId;
@@ -53,8 +51,6 @@ import org.threeten.bp.format.DateTimeFormatter;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 
@@ -94,6 +90,7 @@ public class ReminderDCC extends Fragment {
     private Calendar c;
     private ScrollView scrollView;
     private LocalDate localDate;
+    private static AlarmManager alarmManager;
 
     private static int changeInt;
     private static View itemView;
@@ -129,8 +126,12 @@ public class ReminderDCC extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_reminder_d_c_c, container, false);
-        initializeContent(view);
         return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        initializeContent(view);
     }
 
     public static void setIsFirstItem(boolean isFirstItem) {
@@ -177,9 +178,9 @@ public class ReminderDCC extends Fragment {
         yearV = localDate.getYear();
         yearCV = yearV;
         monthV = localDate.getMonthValue();
-        monthCV = monthV-1;
+        monthCV = monthV - 1;
         month = States.getMonth(monthV, false);
-        dayV =  localDate.getDayOfMonth();
+        dayV = localDate.getDayOfMonth();
         dayCV = dayV;
         fullDate = yearV + ", " + month + " " + dayV + ", ";
         calendarView = (MaterialCalendarView) view.findViewById(R.id.calendarView);
@@ -190,10 +191,14 @@ public class ReminderDCC extends Fragment {
                 yearV = date.getYear();
                 month = States.getMonth(date.getMonth(), false);
                 dayV = date.getDay();
+                yearCV = date.getYear();
+                monthCV = date.getMonth() - 1;
+                dayCV = date.getDay();
                 int lastFullDateLength = fullDate.length();
                 fullDate = yearV + ", " + month + " " + dayV + ", ";
                 stringBuilder = new StringBuilder(timeAndDateTextView.getText()).replace(0, lastFullDateLength, fullDate);
                 timeAndDateTextView.setText(stringBuilder);
+
             }
         });
         calendarImgV = view.findViewById(R.id.calendar_img_v);
@@ -205,19 +210,19 @@ public class ReminderDCC extends Fragment {
                             @Override
                             public void onDateSet(DatePicker datePicker, int year, int month, int day) {
                                 yearV = year;
-                                monthV = month+1;
+                                monthV = month + 1;
                                 dayV = day;
                                 localDate = LocalDate.of(year, monthV, day);
                                 if (day <= calendarView.getMaximumDate().getDay() && day > calendarView.getSelectedDate().getDay() && monthV == calendarView.getSelectedDate().getMonth() && year == calendarView.getSelectedDate().getYear()) {
                                     calendarView.setSelectedDate(CalendarDay.from(year, monthV, day));
                                     StringBuilder newLabelValue = Utils.updateLabel(timeAndDateTextView, CalendarDay.from(localDate), fullDate);
-                                    fullDate = newLabelValue.substring(0, newLabelValue.length()-5);
+                                    fullDate = newLabelValue.substring(0, newLabelValue.length() - 5);
                                     timeAndDateTextView.setText(newLabelValue);
 
                                 } else {
                                     calendarInit(calendarView, localDate);
                                     StringBuilder newLabelValue = Utils.updateLabel(timeAndDateTextView, CalendarDay.from(localDate), fullDate);
-                                    fullDate = newLabelValue.substring(0, newLabelValue.length()-5);
+                                    fullDate = newLabelValue.substring(0, newLabelValue.length() - 5);
                                     timeAndDateTextView.setText(newLabelValue);
                                 }
                                 yearCV = year;
@@ -245,7 +250,7 @@ public class ReminderDCC extends Fragment {
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ShablonFragment.showOrHideFragment(getParentFragmentManager(), ReminderDCC.this, false);
+                ShablonFragment.showOrHideFragment(getParentFragmentManager(), ReminderDCC.this, (ShablonFragment) getParentFragment(), false);
             }
         });
         okB = (Button) view.findViewById(R.id.ok_b);
@@ -259,7 +264,7 @@ public class ReminderDCC extends Fragment {
         cancelB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ShablonFragment.showOrHideFragment(getParentFragmentManager(), ReminderDCC.this, false);
+                ShablonFragment.showOrHideFragment(getParentFragmentManager(), ReminderDCC.this, (ShablonFragment) getParentFragment(),false);
             }
         });
 
@@ -267,7 +272,10 @@ public class ReminderDCC extends Fragment {
 
     private void addItem(EditText text, EditText desc, int iconNumber, int year, int month, int day, int hours, int minutes, boolean repeat, boolean alarm) {
         String title = text.getText().toString();
-        if (ReminderEntity.getEntity(dao, title) != null) {
+        Calendar calendar = Calendar.getInstance();
+        Calendar calendar1 = Calendar.getInstance();
+        calendar1.set(year, month-1, day, hours, minutes);
+        if (ReminderEntity.getEntity(dao, title) != null | (calendar.getTimeInMillis() > calendar1.getTimeInMillis()) | title.equals("")) {
             v.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE));
             Log.e("NamingError: ", "This title already exist.");
         } else {
@@ -278,8 +286,8 @@ public class ReminderDCC extends Fragment {
             adapter.setReminderDataList(reminderEntityList);
             adapter.add(title);
             Log.i("AddItem: ", "Item is added.");
-            addNotification(title, alarmSwitch.isChecked());
-            ShablonFragment.showOrHideFragment(getParentFragmentManager(), ReminderDCC.this, false);
+            addNotification(ReminderEntity.getEntity(dao, title).getCount(), title, alarmSwitch.isChecked(), repeatSwitch.isChecked());
+            ShablonFragment.showOrHideFragment(getParentFragmentManager(), ReminderDCC.this, (ShablonFragment) getParentFragment(),false);
         }
     }
 
@@ -304,20 +312,26 @@ public class ReminderDCC extends Fragment {
         return longList;
     }
 
-    private void addNotification(String contentTitle, boolean setAlarmIsChecked) {
+    private void addNotification(int id, String contentTitle, boolean setAlarmIsChecked, boolean repeatSwitchIsChecked) {
         int hours = timePicker.getHour();
         int minutes = timePicker.getMinute();
         CalendarDay selectedDay = calendarView.getSelectedDate();
-        Log.i("AddNotif: ", "Start set alarms to notifications");
+        Log.i("AddNotification: ", "Start set alarms to notifications");
         ArrayList<Long> longList = convertDate(hours, minutes, (selectedDay != null) ? selectedDay : CalendarDay.today());
         Intent notificationIntent = new Intent(context, AlarmManagerBroadcastReceiver.class);
         notificationIntent.putExtra("notif_time_arr", longList);
         notificationIntent.putExtra("content_title", contentTitle);
         notificationIntent.putExtra("alarm_b", setAlarmIsChecked);
+        notificationIntent.putExtra("notification_id", id);
+        notificationIntent.putExtra("repeat_b", repeatSwitchIsChecked);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, NOTIFICATION_REMINDER, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        alarmManager.set(AlarmManager.RTC_WAKEUP, longList.get(2), pendingIntent);
-        Log.i("AddNotif: ", "Notification is added");
+        alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        if (repeatSwitchIsChecked) {
+            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, longList.get(2), 5000, pendingIntent);
+        } else {
+            alarmManager.set(AlarmManager.RTC_WAKEUP, longList.get(2), pendingIntent);
+        }
+        Log.i("AddNotification: ", "Notification is added");
     }
 
     public void calendarInit(MaterialCalendarView calendarView, LocalDate localDate) {
@@ -328,16 +342,16 @@ public class ReminderDCC extends Fragment {
         int endDay = localDate.getDayOfMonth() + 6;
         Log.i("CalendarInit: ", "Start checking on OutOfBounce");
         if (endDay > localDate.lengthOfMonth()) {
-            if (endMonth-1 == Calendar.DECEMBER) {
+            if (endMonth - 1 == Calendar.DECEMBER) {
                 endMonth = 1;
                 endYear = localDate.getYear() + 1;
             } else {
-                endMonth+=1;
+                endMonth += 1;
             }
             endDay -= localDate.lengthOfMonth();
         }
         Log.i("CalendarInit: ", "Start set properties to calendar");
-        CalendarDay selectedDay = CalendarDay.from(yearV, monthV, dayV);
+        CalendarDay selectedDay = CalendarDay.from(localDate.getYear(), localDate.getMonthValue(), localDate.getDayOfMonth());
         CalendarDay endDate = CalendarDay.from(endYear, endMonth, endDay);
         calendarView.state().edit()
                 .setMinimumDate(selectedDay)
@@ -347,6 +361,10 @@ public class ReminderDCC extends Fragment {
         calendarView.setSelectedDate(localDate);
         Log.i("CalendarInit: ", "Calendar is initialized");
     }
+    public static void dismissNotification(PendingIntent pendingIntent) {
+        assert ReminderDCC.alarmManager != null;
+        ReminderDCC.alarmManager.cancel(pendingIntent);
+    }
 
     @Override
     public void onHiddenChanged(boolean hidden) {
@@ -355,16 +373,20 @@ public class ReminderDCC extends Fragment {
             repeatSwitch.setChecked(false);
             reminderTitle.setText("");
             reminderDescription.setText("");
+            scrollView.scrollTo(0, 0);
+        } else {
             LocalDate localDate = LocalDate.now();
+            c = Calendar.getInstance();
             yearV = localDate.getYear();
             month = States.getMonth(localDate.getMonthValue(), false);
             dayV = localDate.getDayOfMonth();
             fullDate = yearV + ", " + month + " " + dayV + ", ";
+            timeAndDateTextView.setText(fullDate + String.format("%02d", timePicker.getHour()) + ":" + String.format("%02d", timePicker.getMinute()));
+            timePicker.setHour(c.get(Calendar.HOUR_OF_DAY));
+            timePicker.setMinute(c.get(Calendar.MINUTE));
             if (this.localDate != localDate) {
                 calendarInit(calendarView, localDate);
             }
-            timeAndDateTextView.setText(fullDate + String.format("%02d", timePicker.getHour()) + ":" + String.format("%02d", timePicker.getMinute()));
-            scrollView.scrollTo(0, 0);
         }
     }
 }

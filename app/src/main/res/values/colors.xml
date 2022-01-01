@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#FFFFFF</color>
-    <color name="colorPrimaryDark">#DADADA</color>
+    <color name="colorGray">#DADADA</color>
     <color name="colorAccent">#32EA4B</color>
     <color name="colorPressedB">#F8BA5D</color>
     <color name="colorNull">#00000000</color>
     <color name="colorRed">#DA2929</color>
     <color name="colorWhite">#FFFFFF</color>
     <color name="colorBlack">#000000</color>
-    <color name="colorGray">#CBFFAE</color>
+    <color name="colorGreen">#CBFFAE</color>
     <color name="colorTopbar">#EAEAEA</color>
     <color name="colorOrange">#FFD277</color>
     <color name="colorOnDeleteForeground">#99000000</color>
