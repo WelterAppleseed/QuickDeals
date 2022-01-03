@@ -2,31 +2,54 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigationFragment"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:gravity="bottom"
+    android:layout_height="70dp"
+    android:gravity="center"
     android:orientation="horizontal">
 
-    <ImageButton
-        android:id="@+id/dailyFragmentButton"
-        android:layout_width="100dp"
-        android:layout_height="50dp"
-        android:src="@drawable/ic_launcher_foreground" />
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-    <ImageButton
-        android:id="@+id/studyFragmentButton"
-        android:layout_width="100dp"
-        android:layout_height="50dp"
-        android:src="@drawable/ic_launcher_foreground" />
+        <ImageButton
+            android:id="@+id/dailyFragmentButton"
+            android:layout_width="100dp"
+            android:layout_height="40dp"
+            android:background="@color/colorNull"
+            android:scaleType="fitCenter"
+            android:src="@drawable/default_clock" />
 
-    <ImageButton
-        android:id="@+id/carWashFragmentButton"
-        android:layout_width="100dp"
-        android:layout_height="50dp"
-        android:src="@drawable/ic_launcher_foreground" />
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="One-time" />
+    </LinearLayout>
 
-    <ImageButton
-        android:id="@+id/activitiesFragmentButton"
+    <Space
         android:layout_width="100dp"
-        android:layout_height="50dp"
-        android:src="@drawable/ic_launcher_foreground" />
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <ImageButton
+            android:id="@+id/studyFragmentButton"
+            android:layout_width="100dp"
+            android:layout_height="40dp"
+            android:background="@color/colorNull"
+            android:scaleType="fitCenter"
+            android:src="@drawable/endless_clock" />
+
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Weekly" />
+    </LinearLayout>
+
 </LinearLayout>

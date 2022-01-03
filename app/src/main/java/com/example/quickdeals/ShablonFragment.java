@@ -12,6 +12,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
+import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.transition.TransitionInflater;
@@ -55,11 +56,8 @@ public class ShablonFragment extends Fragment implements View.OnClickListener {
     private static final String ARG_PARAM2 = "param2";
 
     // TODO: Rename and change types of parameters
-    private static ColorDrawable darkForegroundColor, lightForegroundColor;
     private static Drawable dFC;
     private ImageButton toStudyFragmentButton;
-    private ImageButton toCarWashFragmentButton;
-    private ImageButton toActivitiesFragmentButton;
     private ImageButton toDailyFragmentButton;
     private ViewPager2 viewPager;
     private static boolean itemIsTouched;
@@ -111,8 +109,6 @@ public class ShablonFragment extends Fragment implements View.OnClickListener {
         setHasOptionsMenu(true);
         view = inflater.inflate(R.layout.fragment_shablon, container, false);
         dFC = ContextCompat.getDrawable(getContext(), R.drawable.view_on_delete_borders);
-        darkForegroundColor = new ColorDrawable(ContextCompat.getColor(view.getContext(), R.color.colorOnDeleteForeground));
-        lightForegroundColor = new ColorDrawable(ContextCompat.getColor(view.getContext(), R.color.colorOnDeleteViewPagerForeground));
         viewPager = view.findViewById(R.id.view_pager);
         viewPager.setUserInputEnabled(false);
         /*toolbar = view.findViewById(R.id.toolbar);
@@ -130,12 +126,8 @@ public class ShablonFragment extends Fragment implements View.OnClickListener {
     private void initNavigationLayout() {
         toDailyFragmentButton = navigationLayout.findViewById(R.id.dailyFragmentButton);
         toStudyFragmentButton = navigationLayout.findViewById(R.id.studyFragmentButton);
-        toCarWashFragmentButton = navigationLayout.findViewById(R.id.carWashFragmentButton);
-        toActivitiesFragmentButton = navigationLayout.findViewById(R.id.activitiesFragmentButton);
         toDailyFragmentButton.setOnClickListener(this);
         toStudyFragmentButton.setOnClickListener(this);
-        toCarWashFragmentButton.setOnClickListener(this);
-        toActivitiesFragmentButton.setOnClickListener(this);
     }
 
     @Override
@@ -147,8 +139,8 @@ public class ShablonFragment extends Fragment implements View.OnClickListener {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
-        switch (item.getItemId()) {
-            case R.id.action_edit:
+        if (item.getItemId() == R.id.action_edit) {
+            if (viewPager.getCurrentItem() == 0) {
                 if (Listeners.snackbar != null && Listeners.snackbar.isShown()) {
                     Listeners.snackbar.setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE).dismiss();
                 }
@@ -156,19 +148,13 @@ public class ShablonFragment extends Fragment implements View.OnClickListener {
                 isUpdated = !isUpdated;
                 Log.i("Menu", "Edit.");
                 return true;
-            case R.id.action_delete:
-               /* if (toolbar.getForeground() != dFC) {
-                    toolbar.setForeground(dFC);
-                    navigationLayout.setForeground(dFC);
-                } else {
-                    toolbar.setForeground(null);
-                    navigationLayout.setForeground(null);
-                }*/
-                Log.i("Menu", "Delete.");
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+            } else {
+                if (Listeners.snackbar != null && Listeners.snackbar.isShown()) {
+                    Listeners.snackbar.setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE).dismiss();
+                }
+            }
         }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -176,18 +162,13 @@ public class ShablonFragment extends Fragment implements View.OnClickListener {
         int numOfFragment;
         if (v == toDailyFragmentButton) {
             numOfFragment = 0;
-        } else if (v == toStudyFragmentButton) {
-            numOfFragment = 1;
-        } else if (v == toCarWashFragmentButton) {
-            numOfFragment = 2;
         } else {
-            numOfFragment = 3;
+            numOfFragment = 1;
+            if (Listeners.snackbar != null && Listeners.snackbar.isShown()) {
+                Listeners.snackbar.setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE).dismiss();
+            }
         }
-        if (Listeners.snackbar != null && Listeners.snackbar.isShown()) {
-            Listeners.snackbar.setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE).dismiss();
-        }
-        viewPager.setCurrentItem(numOfFragment);
-
+        viewPager.setCurrentItem(numOfFragment, false);
     }
     private void initDatabases() {
         RemDatabase db = Room.databaseBuilder(context, RemDatabase.class, "remind_database").build();

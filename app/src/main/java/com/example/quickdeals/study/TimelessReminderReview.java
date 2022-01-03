@@ -272,13 +272,25 @@ public class TimelessReminderReview extends Fragment implements View.OnClickList
         int today = localDate.getDayOfWeek().getValue();
         for (int i = 0; i < 7; i++) {
             if (selectedDays[i]) {
-                int difference;
-                if (today > i || today == i & c.get(Calendar.HOUR_OF_DAY) * 60 + c.get(Calendar.MINUTE) >= hours * 60 + minutes) {
-                    difference = today + 7 - (today - i);
+                int difference, hoursAndMinutes;
+                if (today > i+1 || today == i+1 & c.get(Calendar.HOUR_OF_DAY) * 60 + c.get(Calendar.MINUTE) >= hours * 60 + minutes) {
+                    difference = (i+1) + 7 - today;
+                    if (hours * 60 + minutes < c.get(Calendar.HOUR_OF_DAY) * 60 + minutes) {
+                        difference-=1;
+                        hoursAndMinutes = (24 * 60) - (c.get(Calendar.HOUR_OF_DAY) * 60 + c.get(Calendar.MINUTE)) + hours * 60 + minutes;
+                        System.out.println(hoursAndMinutes + " " + difference);
+                    }
                 } else {
-                    difference = i - today;
+                    difference = (i+1) - today;
+                    if (hours * 60 + minutes < c.get(Calendar.HOUR_OF_DAY) * 60 + minutes) {
+                        difference-=1;
+                        hoursAndMinutes = (24 * 60) - (c.get(Calendar.HOUR_OF_DAY) * 60 + c.get(Calendar.MINUTE)) + hours * 60 + minutes;
+                        System.out.println(hoursAndMinutes + " " + difference);
+                    }
                 }
-                long date = 1000 * 60 * 60 * 24 * difference + 1000 * 60 * 60 * hours + 1000 * 60 * minutes;
+                System.out.println("today is " + today + " and selected day is " + (i+1) + " difference in days " + difference + " with hours " + hours + " with minutes " + minutes);
+                long date = System.currentTimeMillis() + 1000 * 60 * 60 * 24 * difference + Math.abs(c.get(Calendar.HOUR_OF_DAY) * 1000 * 60 * 60 + c.get(Calendar.MINUTE) * 1000 * 60 - (1000 * 60 * 60 * hours + 1000 * 60 * minutes)) - 60000;
+                System.out.println( System.currentTimeMillis() + " and different is " + (System.currentTimeMillis() - date));
                 dates.add(date);
             }
         }
@@ -293,7 +305,8 @@ public class TimelessReminderReview extends Fragment implements View.OnClickList
         TimelessReminderReview.adapter = adapter;
     }
     public static void dismissNotification(PendingIntent pendingIntent) {
-        assert TimelessReminderReview.alarmManager != null;
-        TimelessReminderReview.alarmManager.cancel(pendingIntent);
+        if (TimelessReminderReview.alarmManager != null) {
+            TimelessReminderReview.alarmManager.cancel(pendingIntent);
+        }
     }
 }

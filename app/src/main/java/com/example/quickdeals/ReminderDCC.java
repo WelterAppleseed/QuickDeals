@@ -286,7 +286,7 @@ public class ReminderDCC extends Fragment {
             adapter.setReminderDataList(reminderEntityList);
             adapter.add(title);
             Log.i("AddItem: ", "Item is added.");
-            addNotification(ReminderEntity.getEntity(dao, title).getCount(), title, alarmSwitch.isChecked(), repeatSwitch.isChecked());
+            addNotification(ReminderEntity.getEntity(dao, title).getCount(), title);
             ShablonFragment.showOrHideFragment(getParentFragmentManager(), ReminderDCC.this, (ShablonFragment) getParentFragment(),false);
         }
     }
@@ -300,6 +300,7 @@ public class ReminderDCC extends Fragment {
             dateToLong = localDateTime
                     .atZone(ZoneId.systemDefault())
                     .toInstant().toEpochMilli();
+            System.out.println(System.currentTimeMillis() + " with different " + (dateToLong - System.currentTimeMillis()));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -312,7 +313,7 @@ public class ReminderDCC extends Fragment {
         return longList;
     }
 
-    private void addNotification(int id, String contentTitle, boolean setAlarmIsChecked, boolean repeatSwitchIsChecked) {
+    private void addNotification(int id, String contentTitle) {
         int hours = timePicker.getHour();
         int minutes = timePicker.getMinute();
         CalendarDay selectedDay = calendarView.getSelectedDate();
@@ -321,16 +322,10 @@ public class ReminderDCC extends Fragment {
         Intent notificationIntent = new Intent(context, AlarmManagerBroadcastReceiver.class);
         notificationIntent.putExtra("notif_time_arr", longList);
         notificationIntent.putExtra("content_title", contentTitle);
-        notificationIntent.putExtra("alarm_b", setAlarmIsChecked);
         notificationIntent.putExtra("notification_id", id);
-        notificationIntent.putExtra("repeat_b", repeatSwitchIsChecked);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, NOTIFICATION_REMINDER, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        if (repeatSwitchIsChecked) {
-            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, longList.get(2), 5000, pendingIntent);
-        } else {
-            alarmManager.set(AlarmManager.RTC_WAKEUP, longList.get(2), pendingIntent);
-        }
+        alarmManager.set(AlarmManager.RTC_WAKEUP, longList.get(2), pendingIntent);
         Log.i("AddNotification: ", "Notification is added");
     }
 

@@ -4,6 +4,8 @@ import android.content.Context;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -36,6 +38,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 
 /**
@@ -73,16 +77,12 @@ public class StudyFragment extends Fragment implements View.OnClickListener {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
      * @return A new instance of fragment StudyFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static StudyFragment newInstance(String param1, String param2) {
+    public static StudyFragment newInstance() {
         StudyFragment fragment = new StudyFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -104,10 +104,10 @@ public class StudyFragment extends Fragment implements View.OnClickListener {
         GridRecyclerViewAdapter.setTimelessReminderReview(timelessReminderReview);
         GridRecyclerViewAdapter.setFragmentManager(getParentFragmentManager());
         ShablonFragment.addTimelessFragments(getParentFragmentManager(), timelessReminderDCC, timelessReminderReview);
-        adapter = new GridRecyclerViewAdapter(StudyFragment.recyclerDataArrayList, items, this.getContext());
+        adapter = new GridRecyclerViewAdapter(recyclerDataArrayList, items, context);
+        layoutManager = new GridLayoutManager(this.getContext(),2);
         TimelessReminderDCC.setAdapter(adapter);
         TimelessReminderReview.setAdapter(adapter);
-        layoutManager = new GridLayoutManager(this.getContext(),2);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
         itemTouchHelper = Listeners.setSimpleItemTouchCallback(getParentFragment().getView(), adapter, items, timelessReminderDao);
@@ -145,5 +145,23 @@ public class StudyFragment extends Fragment implements View.OnClickListener {
     }
     public void setContext(Context context) {
         this.context = context;
+    }
+
+    public static void setAlternativeView(boolean isUpdated, FragmentManager parentManager) {
+        FragmentTransaction parentTransaction = parentManager.beginTransaction();
+        if (isUpdated) {
+            parentTransaction.replace(R.id.updated_view_container, DailyRemindersFragment.defaultFragment).commit();
+        } else {
+            Runnable r = new Runnable() {
+                @Override
+                public void run() {
+                    DailyRemindersFragment.defaultFragment.initDefaultRV();
+                }
+            };
+            ExecutorService executorService = Executors.newCachedThreadPool();
+            executorService.submit(r);
+            executorService.shutdown();
+            parentTransaction.replace(R.id.updated_view_container, DailyRemindersFragment.alternativeFragment).commit();
+        }
     }
 }

@@ -5,7 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ShablonFragment">
+    tools:context=".ShablonFragment"
+    android:background="@color/colorGray2">
     <!-- TODO: Update blank fragment layout -->
 
 
@@ -13,13 +14,13 @@
         android:id="@+id/view_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="50dp" />
+        android:layout_marginBottom="70dp" />
 
     <include
         android:id="@+id/navigationLayout"
         layout="@layout/navigation_fragment"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="70dp"
         android:layout_gravity="bottom" />
 
     <FrameLayout

@@ -5,8 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/daily_deals_container"
-    android:background="@color/colorWhite"
-    tools:context=".daily.DailyRemindersFragment">
+    tools:context=".daily.DailyRemindersFragment"
+    android:background="@drawable/view_pager_with_rounded_corners"
+    android:layout_marginLeft="5dp"
+    android:layout_marginRight="5dp">
 
     <!-- <include
          android:id="@+id/rem"

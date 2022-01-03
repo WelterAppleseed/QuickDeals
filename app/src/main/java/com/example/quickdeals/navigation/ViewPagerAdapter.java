@@ -21,24 +21,12 @@ public class ViewPagerAdapter extends FragmentStateAdapter {
     @NonNull
     @Override
     public Fragment createFragment(int position) {
-        switch (position) {
-            case 0: {
+        if (position == 0) {
                 return new DailyRemindersFragment();
-            }
-            case 1: {
+            } else {
                 return new StudyFragment();
             }
-            case 2: {
-                return new CarWashFragment();
-            }
-            case 3: {
-                return new ActivitiesFragment();
-            }
-            default: {
-                return null;
-            }
         }
-    }
 
     @Override
     public int getItemCount() {

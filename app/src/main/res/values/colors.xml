@@ -9,6 +9,7 @@
     <color name="colorWhite">#FFFFFF</color>
     <color name="colorBlack">#000000</color>
     <color name="colorGreen">#CBFFAE</color>
+    <color name="colorGray2">#F8F8F8</color>
     <color name="colorTopbar">#EAEAEA</color>
     <color name="colorOrange">#FFD277</color>
     <color name="colorOnDeleteForeground">#99000000</color>
