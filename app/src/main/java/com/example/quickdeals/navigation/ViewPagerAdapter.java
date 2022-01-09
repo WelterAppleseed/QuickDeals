@@ -2,19 +2,16 @@ package com.example.quickdeals.navigation;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
-import com.example.quickdeals.ShablonFragment;
-import com.example.quickdeals.activities.ActivitiesFragment;
-import com.example.quickdeals.car.CarWashFragment;
+import com.example.quickdeals.ContainerFragment;
 import com.example.quickdeals.daily.DailyRemindersFragment;
-import com.example.quickdeals.study.StudyFragment;
+import com.example.quickdeals.weekly.WeeklyRemindersFragment;
 
 public class ViewPagerAdapter extends FragmentStateAdapter {
     private static final int CARD_ITEM_SIZE = 10;
 
-    public ViewPagerAdapter(@NonNull ShablonFragment fragmentActivity) {
+    public ViewPagerAdapter(@NonNull ContainerFragment fragmentActivity) {
         super(fragmentActivity);
     }
 
@@ -24,7 +21,7 @@ public class ViewPagerAdapter extends FragmentStateAdapter {
         if (position == 0) {
                 return new DailyRemindersFragment();
             } else {
-                return new StudyFragment();
+                return new WeeklyRemindersFragment();
             }
         }
 

@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".study.StudyFragment"
+    tools:context=".weekly.WeeklyRemindersFragment"
     android:background="@drawable/view_pager_with_rounded_corners"
     android:layout_marginLeft="5dp"
     android:layout_marginRight="5dp">

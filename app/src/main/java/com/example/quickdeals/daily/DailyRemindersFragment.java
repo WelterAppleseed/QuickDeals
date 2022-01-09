@@ -19,24 +19,17 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
+import com.example.quickdeals.ContainerFragment;
 import com.example.quickdeals.R;
-import com.example.quickdeals.ReminderDCC;
-import com.example.quickdeals.ReminderReview;
-import com.example.quickdeals.ShablonFragment;
 import com.example.quickdeals.daily.container.AlternativeDailyDealsContainerFragment;
 import com.example.quickdeals.daily.container.DefaultDailyDealsContainerFragment;
 import com.example.quickdeals.database.temporary.RemDatabase;
 import com.example.quickdeals.database.temporary.dao.ReminderDao;
 import com.example.quickdeals.database.temporary.entity.ReminderEntity;
-import com.example.quickdeals.study.TimelessReminderDCC;
-import com.example.quickdeals.utils.reminders.RecyclerItemAdapter;
-import com.example.quickdeals.utils.reminders.ReminderOptions;
-import com.example.quickdeals.utils.reminders.SavedReminder;
+import com.example.quickdeals.utils.adapters.RecyclerItemAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 
 /**
@@ -61,9 +54,7 @@ public class DailyRemindersFragment extends Fragment implements View.OnClickList
     public static RecyclerView rList;
     private List<String> titles;
     private SharedPreferences preferences;
-    private SavedReminder savedReminder;
     private static RecyclerItemAdapter adapter;
-    private ReminderOptions reminderDCC;
     private static Context context;
     private static List<ReminderEntity> reminderEntityList;
     private RemDatabase db;
@@ -79,7 +70,7 @@ public class DailyRemindersFragment extends Fragment implements View.OnClickList
     private static ProgressBar progressBar;
     public static DefaultDailyDealsContainerFragment defaultFragment;
     public static AlternativeDailyDealsContainerFragment alternativeFragment;
-    private ShablonFragment shablonFragment;
+    private ContainerFragment containerFragment;
 
     public static void setParentView(View parentView) {
         DailyRemindersFragment.parentView = parentView;
@@ -140,7 +131,7 @@ public class DailyRemindersFragment extends Fragment implements View.OnClickList
 
     private void createAndInitContent(final View view) {
         context = view.getContext();
-        shablonFragment = (ShablonFragment) getParentFragment();
+        containerFragment = (ContainerFragment) getParentFragment();
         frameLayout = (FrameLayout) view.findViewById(R.id.updated_view_container);
         img = view.findViewById(R.id.empty_imageView);
         progressBar = view.findViewById(R.id.default_d_d_progress_bar);
@@ -149,16 +140,16 @@ public class DailyRemindersFragment extends Fragment implements View.OnClickList
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ShablonFragment.showOrHideFragment(getParentFragmentManager(), dccFragment, shablonFragment, true);
+                ContainerFragment.showOrHideFragment(getParentFragmentManager(), dccFragment, containerFragment, true);
             }
         });
-        ShablonFragment.setParentManager(getParentFragmentManager());
+        ContainerFragment.setParentManager(getParentFragmentManager());
     }
 
-    public static void setAlternativeView(boolean isUpdated, FragmentManager parentManager, ShablonFragment shablonFragment) {
+    public static void setAlternativeView(boolean isUpdated, FragmentManager parentManager, ContainerFragment containerFragment) {
         FragmentTransaction transaction = parentManager.beginTransaction();
-        shablonFragment.setSharedElementReturnTransition(TransitionInflater.from(shablonFragment.getActivity()).inflateTransition(R.transition.change_image_transform));
-        DailyRemindersFragment.alternativeFragment.setEnterTransition(TransitionInflater.from(shablonFragment.getActivity()).inflateTransition(android.R.transition.slide_top));
+        containerFragment.setSharedElementReturnTransition(TransitionInflater.from(containerFragment.getActivity()).inflateTransition(R.transition.change_image_transform));
+        DailyRemindersFragment.alternativeFragment.setEnterTransition(TransitionInflater.from(containerFragment.getActivity()).inflateTransition(android.R.transition.slide_top));
         transaction.setCustomAnimations(0, R.anim.exit, R.anim.enter, 0);
         if (!isUpdated) {
             alternativeFragment.rList.scrollToPosition(0);

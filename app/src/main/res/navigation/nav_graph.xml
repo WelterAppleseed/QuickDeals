@@ -11,7 +11,7 @@
         tools:layout="@layout/fragment_start" >
         <action
             android:id="@+id/action_startFragment_to_shablonFragment"
-            app:destination="@id/shablonFragment" />
+            app:destination="@id/containerFragment" />
     </fragment>
     <fragment
         android:id="@+id/dailyRemindersFragment"
@@ -21,75 +21,27 @@
         <action
             android:id="@+id/action_dailyRemindersFragment_to_studyFragment2"
             app:destination="@id/studyFragment" />
-        <action
-            android:id="@+id/action_dailyRemindersFragment_to_carWashFragment2"
-            app:destination="@id/carWashFragment" />
-        <action
-            android:id="@+id/action_dailyRemindersFragment_to_activitiesFragment2"
-            app:destination="@id/activitiesFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/activitiesFragment"
-        android:name="com.example.quickdeals.activities.ActivitiesFragment"
-        android:label="fragment_activities"
-        tools:layout="@layout/fragment_activities" >
-        <action
-            android:id="@+id/action_activitiesFragment2_to_dailyRemindersFragment"
-            app:destination="@id/dailyRemindersFragment" />
-        <action
-            android:id="@+id/action_activitiesFragment2_to_studyFragment2"
-            app:destination="@id/studyFragment" />
-        <action
-            android:id="@+id/action_activitiesFragment2_to_carWashFragment2"
-            app:destination="@id/carWashFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/carWashFragment"
-        android:name="com.example.quickdeals.car.CarWashFragment"
-        android:label="fragment_car_wash"
-        tools:layout="@layout/fragment_car_wash" >
-        <action
-            android:id="@+id/action_carWashFragment2_to_activitiesFragment2"
-            app:destination="@id/activitiesFragment" />
-        <action
-            android:id="@+id/action_carWashFragment2_to_studyFragment2"
-            app:destination="@id/studyFragment" />
-        <action
-            android:id="@+id/action_carWashFragment2_to_dailyRemindersFragment"
-            app:destination="@id/dailyRemindersFragment" />
     </fragment>
     <fragment
         android:id="@+id/studyFragment"
-        android:name="com.example.quickdeals.study.StudyFragment"
+        android:name="com.example.quickdeals.weekly.WeeklyRemindersFragment"
         android:label="fragment_study"
         tools:layout="@layout/fragment_study" >
         <action
-            android:id="@+id/action_studyFragment2_to_carWashFragment2"
-            app:destination="@id/carWashFragment" />
-        <action
             android:id="@+id/action_studyFragment2_to_dailyRemindersFragment"
             app:destination="@id/dailyRemindersFragment" />
-        <action
-            android:id="@+id/action_studyFragment_to_activitiesFragment"
-            app:destination="@id/activitiesFragment" />
     </fragment>
     <fragment
-        android:id="@+id/shablonFragment"
-        android:name="com.example.quickdeals.ShablonFragment"
+        android:id="@+id/containerFragment"
+        android:name="com.example.quickdeals.ContainerFragment"
         android:label="fragment_shablon"
-        tools:layout="@layout/fragment_shablon" >
+        tools:layout="@layout/fragment_container" >
         <action
             android:id="@+id/action_shablonFragment_to_dailyRemindersFragment"
             app:destination="@id/dailyRemindersFragment" />
         <action
             android:id="@+id/action_shablonFragment_to_studyFragment"
             app:destination="@id/studyFragment" />
-        <action
-            android:id="@+id/action_shablonFragment_to_carWashFragment"
-            app:destination="@id/carWashFragment" />
-        <action
-            android:id="@+id/action_shablonFragment_to_activitiesFragment2"
-            app:destination="@id/activitiesFragment" />
         <action
             android:id="@+id/action_shablonFragment_to_reminderDCC2"
             app:destination="@id/reminderDCC" />
@@ -99,12 +51,12 @@
     </fragment>
     <fragment
         android:id="@+id/reminderDCC"
-        android:name="com.example.quickdeals.ReminderReview"
+        android:name="com.example.quickdeals.daily.ReminderReview"
         android:label="fragment_reminder_d_c_c"
         tools:layout="@layout/fragment_reminder_d_c_c" />
     <fragment
         android:id="@+id/reminderReview"
-        android:name="com.example.quickdeals.ReminderReview"
+        android:name="com.example.quickdeals.daily.ReminderReview"
         android:label="fragment_reminder_review"
         tools:layout="@layout/fragment_reminder_review" />
     <fragment
@@ -127,7 +79,7 @@
     </fragment>
     <fragment
         android:id="@+id/timelessReminderDCC"
-        android:name="com.example.quickdeals.study.TimelessReminderDCC"
+        android:name="com.example.quickdeals.weekly.WeeklyReminderDCC"
         android:label="fragment_timeless_reminder_d_c_c"
         tools:layout="@layout/fragment_timeless_reminder_d_c_c" />
 </navigation>

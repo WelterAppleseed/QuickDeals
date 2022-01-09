@@ -8,6 +8,7 @@
 
     <me.itangqi.waveloadingview.WaveLoadingView
         android:id="@+id/waveLoadingView"
+        android:visibility="invisible"
         wlv_borderColor="@color/colorGreen"
         wlv_borderWidth="3dp"
         wlv_progressValue="-30"
@@ -25,18 +26,16 @@
         android:layout_height="840dp"
         android:layout_gravity="center" />
 
-    <TextView
-        android:id="@+id/wish_text_view"
+    <ImageView
+        android:contentDescription="@string/start_activity_image"
+        android:id="@+id/wish_image_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_gravity="center"
-        android:layout_marginBottom="50dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginLeft="10dp"
         android:alpha="0"
         android:gravity="center"
+        android:src="@drawable/start_text_morning"
         android:text="@string/hello_blank_fragment"
-        android:textColor="@color/colorBlack"
-        android:textSize="50sp" />
+        android:textColor="@color/colorBlack" />
 
 </FrameLayout>

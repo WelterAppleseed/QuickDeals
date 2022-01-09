@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -10,40 +9,14 @@
     android:layout_marginLeft="5dp"
     android:layout_marginRight="5dp">
 
-    <!-- <include
-         android:id="@+id/rem"
-         layout="@layout/reminder_row"
-         android:elevation="20dp"
-         android:layout_width="match_parent"
-         android:layout_height="match_parent"
-         android:layout_gravity="center"
-         android:layout_marginBottom="55dp"
-         />
- -->
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/textView3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="10dp"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="TextView" />
-
 
         <FrameLayout
             android:id="@+id/weekly_updated_view_container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="4">
+            android:layout_height="match_parent">
 
             <ImageView
+                android:contentDescription="@string/no_reminders_image"
                 android:id="@+id/empty_imageView"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
@@ -58,17 +31,15 @@
                 android:layout_gravity="center" />
         </FrameLayout>
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/add_item"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
-            android:layout_marginEnd="20dp"
-            android:layout_marginBottom="10dp"
-            android:clickable="true"
-            android:src="@android:drawable/ic_input_add" />
-
-    </LinearLayout>
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/add_item"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="10dp"
+        android:clickable="true"
+        android:src="@android:drawable/ic_input_add" />
 
     <!-- <include
          android:id="@+id/navigationLayout"

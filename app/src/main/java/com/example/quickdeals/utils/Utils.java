@@ -1,59 +1,26 @@
 package com.example.quickdeals.utils;
 
-import android.annotation.SuppressLint;
-import android.app.ActionBar;
-import android.app.Activity;
-import android.content.res.Resources;
-import android.graphics.Color;
-import android.text.TextWatcher;
 import android.util.Log;
-import android.view.Menu;
-import android.view.View;
-import android.view.ViewParent;
-import android.view.Window;
-import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.appcompat.widget.ActionBarOverlayLayout;
+import androidx.annotation.Nullable;
 import androidx.navigation.NavOptions;
 
 import com.example.quickdeals.R;
-import com.example.quickdeals.utils.states.States;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 
-import org.threeten.bp.LocalDate;
-
-import java.lang.reflect.Field;
 import java.util.Calendar;
 
 public class Utils {
 
-    public static int dpToPx(int dp) {
-        return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
-    }
-
-    public static int pxToDp(int px) {
-        return (int) (px / Resources.getSystem().getDisplayMetrics().density);
-    }
-
-    static void onFirstFieldChecking(CharSequence s, EditText currentField, EditText nextField, TextWatcher textWatcher) {
-        int ffValue = Integer.parseInt(s.toString());
-        if (ffValue > 2) {
-            currentField.removeTextChangedListener(textWatcher);
-            nextField.removeTextChangedListener(textWatcher);
-            String time = "0" + ffValue;
-            currentField.setText(time);
-            currentField.addTextChangedListener(textWatcher);
-            nextField.addTextChangedListener(textWatcher);
-        } else {
-            nextField.requestFocus();
-        }
-    }
+    private static final int[] icons = {R.drawable.default_icon, R.drawable.sport_icon, R.drawable.fun_icon, R.drawable.work_icon, R.drawable.hobby_icon};
+    private static final String[] months = {"Zero Month", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
+    private static final String[] week = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun", "fds"};
+    private static final String[] waveColors = {"#1E3216", "#1E4216", "#26471E", "#2B6125", "#32712C", "#377C32", "#3E8E38", "#439F3E", "#48AF43", "#4FBD4A", "#54CF4E", "#5BDD56", "#5FEF59", "#67FB62" };
 
     public static StringBuilder updateLabel(TextView label, CalendarDay date, String previousLabelValue) {
         int yearV = date.getYear();
-        String month = States.getMonth(date.getMonth(), false);
+        String month = getMonth(date.getMonth(), false);
         int dayV = date.getDay();
         int lastFullDateLength = previousLabelValue.length();
         String newLabel = yearV + ", " + month + " " + dayV + ", ";
@@ -62,19 +29,48 @@ public class Utils {
 
     }
 
-    public static String getStartActivityText(Calendar c) {
-        String text = "";
+    public static int getIcon(int i) {
+        return icons[i];
+    }
+
+    public static String getTime(@Nullable Integer year, int day, String month, int hours, int minutes, boolean fullForm) {
+        if (fullForm) {
+            return String.format("%d, %s %d, %02d:%02d", year, month, day, hours, minutes);
+        } else {
+            return String.format("%d %s\n %02d:%02d", day, month, hours, minutes);
+        }
+    }
+
+    public static String getMonth(int i, boolean shorted) {
+        if (shorted) {
+            return months[i].substring(0, 3);
+        } else {
+            return months[i];
+        }
+    }
+    public static String getWeekDay(int i) {
+        return week[i];
+    }
+
+    public static String getWaves(Calendar c) {
+        int hours = c.get(Calendar.HOUR_OF_DAY) > 12 ? 12 - (c.get(Calendar.HOUR_OF_DAY) - 12) : c.get(Calendar.HOUR_OF_DAY);
+        System.out.println(hours);
+        return waveColors[hours];
+    }
+
+    public static int getStartActivityText(Calendar c) {
+        int image;
         int hours = c.get(Calendar.HOUR_OF_DAY);
         if (hours < 5 | hours > 21) {
-            text = "Glad to see you at night!";
+           image = R.drawable.start_text_night;
         } else if (hours > 5 & hours < 12) {
-            text = "Good morning!";
+            image = R.drawable.start_text_morning;
         } else if (hours > 12 & hours < 17) {
-            text = "Good afternoon!";
+            image = R.drawable.start_text_afternoon;
         } else {
-            text = "Good evening!";
+            image = R.drawable.start_text_evening;
         }
-        return text;
+        return image;
     }
 
     public static NavOptions getNavOptions() {
@@ -84,24 +80,5 @@ public class Utils {
                 .setPopEnterAnim(R.anim.nav_default_pop_enter_anim)
                 .setPopExitAnim(R.anim.nav_default_pop_exit_anim)
                 .build();
-    }
-
-    @SuppressLint("RestrictedApi")
-    public static void getMenuItemsView(View actionBar) throws NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
-        ViewParent parentOfHome = (ViewParent) actionBar;  //ActionBarView is parent of home ImageView, see layout file in sources
-        Log.i("ActionBar", String.valueOf(actionBar.getClass()));
-        ActionBarOverlayLayout overlayLayout = (ActionBarOverlayLayout) actionBar.getParent();
-        if (!parentOfHome.getClass().getName().contains("ActionBarView")) {
-            parentOfHome = parentOfHome.getParent();
-            Class absAbv = parentOfHome.getClass().getSuperclass(); //ActionBarView -> AbsActionBarView class
-            Log.i("ActionBar", String.valueOf(absAbv.getClass()));
-            Field actionMenuPresenterField = absAbv.getDeclaredField("mActionMenuPresenter");
-            actionMenuPresenterField.setAccessible(true);
-            Object actionMenuPresenter = actionMenuPresenterField.get(parentOfHome);
-            Field actionMenuViewField = actionMenuPresenter.getClass().getSuperclass().getDeclaredField("mMenuView");
-            actionMenuViewField.setAccessible(true);
-            LinearLayout actionMenuView = (LinearLayout) actionMenuViewField.get(actionMenuPresenter);
-            Log.i("ActionBar", String.valueOf(actionMenuView.findViewById(R.id.action_edit)));
-        }
     }
 }
