@@ -1,16 +1,37 @@
 package com.example.quickdeals.start;
 
+import android.graphics.Color;
+import android.graphics.drawable.AnimationDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
 
+import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
 import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.example.quickdeals.R;
+import com.example.quickdeals.ShablonFragment;
+import com.example.quickdeals.utils.Utils;
+import com.example.quickdeals.utils.states.States;
+import com.google.android.material.appbar.AppBarLayout;
+
+import java.util.Calendar;
+import java.util.Objects;
+
+import me.itangqi.waveloadingview.WaveLoadingView;
 
 public class StartFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
@@ -19,9 +40,9 @@ public class StartFragment extends Fragment {
     private static final String ARG_PARAM2 = "param2";
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-    private Button continueButton;
+    WaveLoadingView mWaveLoadingView;
+    private Drawable mActionBarBackgroundDrawable;
+    private  ActionBar actionBar;
 
     public StartFragment() {
     }
@@ -46,23 +67,60 @@ public class StartFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+        try {
+            //((AppCompatActivity) getActivity()).getSupportActionBar().hide();
+        } catch (Exception e) {e.printStackTrace();}
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_start, container, false);
-        continueButton = view.findViewById(R.id.button3);
-        continueButton.setOnClickListener(new View.OnClickListener() {
+        Calendar c = Calendar.getInstance();
+        mWaveLoadingView = view.findViewById(R.id.waveLoadingView);
+        mWaveLoadingView.setShapeType(WaveLoadingView.ShapeType.CIRCLE);
+        mWaveLoadingView.setProgressValue(-30);
+        mWaveLoadingView.setAmplitudeRatio(60);
+        mWaveLoadingView.setWaveColor(Color.parseColor(States.getWaves(c)));
+        mWaveLoadingView.setTopTitleStrokeWidth(3);
+        mWaveLoadingView.setAnimDuration(3000);
+        mWaveLoadingView.startAnimation();
+        final TextView wishTextView = view.findViewById(R.id.wish_text_view);
+        wishTextView.setText(Utils.getStartActivityText(c));
+        wishTextView.animate().alpha(1).setDuration(1500).withEndAction(new Runnable() {
             @Override
-            public void onClick(View v) {
-                Navigation.findNavController(view).navigate(R.id.action_startFragment_to_shablonFragment);
+            public void run() {
+                final Handler handler = new Handler();
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        int i = 0;
+                        while (i < 100) {
+                            Log.i("Wave", String.valueOf(i));
+                            i+=1;
+                            final int finalI = i;
+                            handler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mWaveLoadingView.setProgressValue(finalI);
+                                }
+                            });
+                        }
+                    }
+                }).start();
+                wishTextView.animate().alpha(0).setDuration(1500).withEndAction(new Runnable() {
+                    @Override
+                    public void run() {
+                        mWaveLoadingView.animate().alpha(0).setDuration(300).withEndAction(new Runnable() {
+                            @Override
+                            public void run() {
+                                Navigation.findNavController(view).navigate(R.id.action_startFragment_to_shablonFragment, null, Utils.getNavOptions());
+                            }
+                        }).start();
+                    }
+                }).start();
             }
-        });
+        }).start();
         return view;
     }
 }

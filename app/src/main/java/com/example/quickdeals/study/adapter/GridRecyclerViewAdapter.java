@@ -24,6 +24,7 @@ import com.example.quickdeals.database.temporary.entity.ReminderEntity;
 import com.example.quickdeals.database.timeless.TimelessReminderData;
 import com.example.quickdeals.database.timeless.dao.TimelessReminderDao;
 import com.example.quickdeals.database.timeless.entity.TimelessReminderEntity;
+import com.example.quickdeals.study.StudyFragment;
 import com.example.quickdeals.study.TimelessReminderDCC;
 import com.example.quickdeals.study.TimelessReminderReview;
 import com.example.quickdeals.study.item_data.GridItemData;
@@ -38,16 +39,17 @@ public class GridRecyclerViewAdapter extends RecyclerView.Adapter<GridRecyclerVi
     private Context mcontext;
     private int purposeCode;
     private List<String> items;
-    private static TimelessReminderDao timelessReminderDao;
+    private TimelessReminderDao timelessReminderDao;
     private int count, newDataInt, next, restorePosition, changeInt;
     private static ShablonFragment shablonFragment;
     private static TimelessReminderReview timelessReminderReview;
     private static FragmentManager fragmentManager;
 
-    public GridRecyclerViewAdapter(List<TimelessReminderEntity> recyclerDataArrayList, List<String> items, Context mcontext) {
+    public GridRecyclerViewAdapter(List<TimelessReminderEntity> recyclerDataArrayList, TimelessReminderDao timelessReminderDao, List<String> items, Context mcontext) {
         this.courseDataArrayList = recyclerDataArrayList;
         this.mcontext = mcontext;
         this.items = items;
+        this.timelessReminderDao = timelessReminderDao;
         count = 0;
     }
 
@@ -92,6 +94,10 @@ public class GridRecyclerViewAdapter extends RecyclerView.Adapter<GridRecyclerVi
         System.out.println(getItemCount() + " " + position);
         holder.courseTV.setText(holder.currentEntity.title);
         holder.courseIV.setImageResource(States.getIcon(holder.currentEntity.icon));
+        if (position == getItemCount()-1) {
+            StudyFragment.removeProgressBar();
+            StudyFragment.setEmptyContainerImage(items.isEmpty());
+        }
     }
 
     @Override
@@ -121,10 +127,10 @@ public class GridRecyclerViewAdapter extends RecyclerView.Adapter<GridRecyclerVi
                 public void onClick(View v) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                         TextView titleTextView = v.findViewById(R.id.idTVCourse);
-                        shablonFragment.setSharedElementReturnTransition(TransitionInflater.from(shablonFragment.getActivity()).inflateTransition(R.transition.change_image_transform));
+                        //shablonFragment.setSharedElementReturnTransition(TransitionInflater.from(shablonFragment.getActivity()).inflateTransition(R.transition.change_image_transform));
                         //shablonFragment.setExitTransition(TransitionInflater.from(shablonFragment.getActivity()).inflateTransition(android.R.transition.slide_left));
                         timelessReminderReview.setNewArgs(getBundlesFrom(titleTextView.getText().toString()), items.indexOf(titleTextView.getText().toString()));
-                        timelessReminderReview.setSharedElementEnterTransition(TransitionInflater.from(shablonFragment.getActivity()).inflateTransition(R.transition.change_image_transform));
+                        //timelessReminderReview.setSharedElementEnterTransition(TransitionInflater.from(shablonFragment.getActivity()).inflateTransition(R.transition.change_image_transform));
                         //timelessReminderReview.setEnterTransition(TransitionInflater.from(shablonFragment.getActivity()).inflateTransition(android.R.transition.slide_right));
                         //ViewCompat.setTransitionName(courseIV, "1");
                        /* fragmentManager.beginTransaction()
@@ -133,7 +139,7 @@ public class GridRecyclerViewAdapter extends RecyclerView.Adapter<GridRecyclerVi
                                 .addToBackStack("transaction")
                                 .addSharedElement(courseIV, "1")
                                 .commit();*/
-                       ShablonFragment.showOrHideFragment(fragmentManager, timelessReminderReview, shablonFragment, true);
+                       ShablonFragment.showOrHideFragment(fragmentManager, timelessReminderReview, shablonFragment,true);
                     }
                 }
             });
@@ -143,9 +149,6 @@ public class GridRecyclerViewAdapter extends RecyclerView.Adapter<GridRecyclerVi
 
     public void setCourseDataArrayList(List<TimelessReminderEntity> courseDataArrayList) {
         this.courseDataArrayList = courseDataArrayList;
-    }
-    public static void setTimelessReminderDao(TimelessReminderDao timelessReminderDao) {
-        GridRecyclerViewAdapter.timelessReminderDao = timelessReminderDao;
     }
 
     public void add(String title) {

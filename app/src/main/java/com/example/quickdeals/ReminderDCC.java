@@ -36,6 +36,7 @@ import com.example.quickdeals.database.temporary.dao.ReminderDao;
 import com.example.quickdeals.database.temporary.entity.ReminderEntity;
 import com.example.quickdeals.utils.CompoundListeners;
 import com.example.quickdeals.utils.Utils;
+import com.example.quickdeals.utils.reminders.AlternativeRecyclerItemAdapter;
 import com.example.quickdeals.utils.reminders.RecyclerItemAdapter;
 import com.example.quickdeals.utils.reminders.ReminderOptions;
 import com.example.quickdeals.utils.states.States;
@@ -85,12 +86,14 @@ public class ReminderDCC extends Fragment {
     private Vibrator v;
     private static boolean isFirstItem;
     private static RecyclerItemAdapter adapter;
+    private static AlternativeRecyclerItemAdapter altAdapter;
     private static int iconNumber = 0;
     private StringBuilder stringBuilder;
     private Calendar c;
     private ScrollView scrollView;
     private LocalDate localDate;
     private static AlarmManager alarmManager;
+    private ShablonFragment shablonFragment;
 
     private static int changeInt;
     private static View itemView;
@@ -150,8 +153,13 @@ public class ReminderDCC extends Fragment {
         ReminderDCC.adapter = adapter;
     }
 
+    public static void setAltAdapter(AlternativeRecyclerItemAdapter altAdapter) {
+        ReminderDCC.altAdapter = altAdapter;
+    }
+
     private void initializeContent(final View view) {
         c = Calendar.getInstance();
+        shablonFragment = (ShablonFragment) getParentFragment();
         v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
         scrollView = view.findViewById(R.id.scroll_rem_t);
         reminderActions = new ReminderActions(context);
@@ -250,7 +258,7 @@ public class ReminderDCC extends Fragment {
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ShablonFragment.showOrHideFragment(getParentFragmentManager(), ReminderDCC.this, (ShablonFragment) getParentFragment(), false);
+                ShablonFragment.showOrHideFragment(getParentFragmentManager(), ReminderDCC.this, shablonFragment,   false);
             }
         });
         okB = (Button) view.findViewById(R.id.ok_b);
@@ -264,7 +272,7 @@ public class ReminderDCC extends Fragment {
         cancelB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ShablonFragment.showOrHideFragment(getParentFragmentManager(), ReminderDCC.this, (ShablonFragment) getParentFragment(),false);
+                ShablonFragment.showOrHideFragment(getParentFragmentManager(), ReminderDCC.this, shablonFragment, false);
             }
         });
 
@@ -285,9 +293,10 @@ public class ReminderDCC extends Fragment {
             List<ReminderEntity> reminderEntityList = ReminderEntity.getAll(dao);
             adapter.setReminderDataList(reminderEntityList);
             adapter.add(title);
+            altAdapter.update(title, reminderEntityList.get(reminderEntityList.size()-1));
             Log.i("AddItem: ", "Item is added.");
             addNotification(ReminderEntity.getEntity(dao, title).getCount(), title);
-            ShablonFragment.showOrHideFragment(getParentFragmentManager(), ReminderDCC.this, (ShablonFragment) getParentFragment(),false);
+            ShablonFragment.showOrHideFragment(getParentFragmentManager(), ReminderDCC.this, shablonFragment,  false);
         }
     }
 

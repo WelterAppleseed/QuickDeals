@@ -1,0 +1,58 @@
+<animated-vector
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt">
+    <aapt:attr name="android:drawable">
+        <vector
+            android:name="vector"
+            android:width="512dp"
+            android:height="512dp"
+            android:viewportWidth="512"
+            android:viewportHeight="512">
+            <group
+                android:name="group"
+                android:pivotX="235"
+                android:pivotY="235"
+                android:scaleX="0"
+                android:scaleY="0"
+                android:rotation="180">
+                <path
+                    android:name="path"
+                    android:pathData="M 84 20 L 84 40 L 69.3 40 C 60.2 40 51.8 40.6 47.5 41.5 C 25 46.2 6.2 65 1.5 87.5 C -0.7 98 -0.7 454 1.5 464.5 C 6.2 487 25 505.8 47.5 510.5 C 58 512.7 454 512.7 464.5 510.5 C 487 505.8 505.8 487 510.5 464.5 C 512.7 454 512.7 98 510.5 87.5 C 505.8 65 487 46.2 464.5 41.5 C 460.2 40.6 451.8 40 442.8 40 L 428 40 L 428 0 L 388 0 L 388 40 L 124 40 L 124 0 L 84 0 L 84 20 Z M 84 100 L 84 120 L 124 120 L 124 80 L 388 80 L 388 120 L 428 120 L 428 79.8 L 443.3 80.2 C 457.7 80.5 458.9 80.6 462.3 83 C 464.4 84.4 467.3 87.3 468.8 89.4 L 471.5 93.3 L 471.8 120.7 L 472.1 148 L 40 148 L 40 122.7 C 40 108.8 40.5 95.9 41 93.8 C 42.3 89.4 49.1 82.3 53.4 81.1 C 55.1 80.6 62.7 80.1 70.3 80.1 L 84 80 L 84 100 Z M 471.8 323.3 L 471.5 458.7 L 468.8 462.6 C 467.3 464.7 464.4 467.6 462.3 469 L 458.6 471.5 L 53.4 471.5 L 49.7 469 C 47.6 467.6 44.7 464.7 43.2 462.6 L 40.5 458.7 L 40.2 323.3 L 40 188 L 472 188 L 471.8 323.3 Z"
+                    android:fillColor="#000"
+                    android:strokeWidth="1" />
+                <path
+                    android:name="path_1"
+                    android:pathData="M 76 250 L 76 270 L 116 270 L 116 230 L 76 230 L 76 250 Z M 156 250 L 156 270 L 196 270 L 196 230 L 156 230 L 156 250 Z M 236 250 L 236 270 L 276 270 L 276 230 L 236 230 L 236 250 Z M 316 250 L 316 270 L 356 270 L 356 230 L 316 230 L 316 250 Z M 396 250 L 396 270 L 436 270 L 436 230 L 396 230 L 396 250 Z M 76 330 L 76 350 L 116 350 L 116 310 L 76 310 L 76 330 Z M 156 330 L 156 350 L 196 350 L 196 310 L 156 310 L 156 330 Z M 236 330 L 236 350 L 276 350 L 276 310 L 236 310 L 236 330 Z M 316 330 L 316 350 L 356 350 L 356 310 L 316 310 L 316 330 Z M 396 330 L 396 350 L 436 350 L 436 310 L 396 310 L 396 330 Z M 76 410 L 76 430 L 116 430 L 116 390 L 76 390 L 76 410 Z M 156 410 L 156 430 L 196 430 L 196 390 L 156 390 L 156 410 Z M 236 410 L 236 430 L 276 430 L 276 390 L 236 390 L 236 410 Z M 316 410 L 316 430 L 356 430 L 356 390 L 316 390 L 316 410 Z"
+                    android:fillColor="#000"
+                    android:strokeWidth="1"/>
+            </group>
+        </vector>
+    </aapt:attr>
+    <target android:name="group">
+        <aapt:attr name="android:animation">
+            <set>
+                <objectAnimator
+                    android:propertyName="scaleX"
+                    android:duration="300"
+                    android:valueFrom="0"
+                    android:valueTo="7"
+                    android:valueType="floatType"
+                    android:interpolator="@android:anim/anticipate_overshoot_interpolator"/>
+                <objectAnimator
+                    android:propertyName="scaleY"
+                    android:duration="300"
+                    android:valueFrom="0"
+                    android:valueTo="7"
+                    android:valueType="floatType"
+                    android:interpolator="@android:anim/anticipate_overshoot_interpolator"/>
+                <objectAnimator
+                    android:propertyName="rotation"
+                    android:duration="300"
+                    android:valueFrom="0"
+                    android:valueTo="279"
+                    android:valueType="floatType"
+                    android:interpolator="@android:interpolator/linear_out_slow_in"/>
+            </set>
+        </aapt:attr>
+    </target>
+</animated-vector>

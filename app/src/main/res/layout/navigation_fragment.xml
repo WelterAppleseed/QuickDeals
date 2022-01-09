@@ -17,6 +17,7 @@
             android:layout_height="40dp"
             android:background="@color/colorNull"
             android:scaleType="fitCenter"
+            android:tint="@color/colorSelectedViewGreen"
             android:src="@drawable/default_clock" />
 
         <TextView

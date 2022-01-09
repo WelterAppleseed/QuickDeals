@@ -1,55 +1,48 @@
-package com.example.quickdeals.daily.container;
+package com.example.quickdeals.study.containers;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
 import com.example.quickdeals.R;
-import com.example.quickdeals.ReminderDCC;
-import com.example.quickdeals.daily.dialog.notifications.NotificationService;
-import com.example.quickdeals.database.temporary.RemDatabase;
-import com.example.quickdeals.database.temporary.dao.ReminderDao;
-import com.example.quickdeals.database.temporary.entity.ReminderEntity;
+import com.example.quickdeals.database.timeless.TimelessRemDatabase;
+import com.example.quickdeals.database.timeless.dao.TimelessReminderDao;
+import com.example.quickdeals.database.timeless.entity.TimelessReminderEntity;
+import com.example.quickdeals.study.TimelessReminderDCC;
 import com.example.quickdeals.utils.Listeners;
 import com.example.quickdeals.utils.reminders.AlternativeRecyclerItemAdapter;
+import com.example.quickdeals.utils.reminders.AlternativeWeeklyRecyclerItemAdapter;
 
 import org.threeten.bp.LocalDate;
 
 import java.util.List;
 
-
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link AlternativeDailyDealsContainerFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class AlternativeDailyDealsContainerFragment extends Fragment {
+public class AlternativeWeeklyDealsContainerFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private static Context context;
     public RecyclerView rList;
-    private ReminderDao dao;
-    private static RemDatabase db;
+    private TimelessReminderDao tdao;
+    private static TimelessRemDatabase tdb;
     private static FragmentManager parent;
     private List<String> titles;
-    private List<ReminderEntity> reminderEntityList;
-    private AlternativeRecyclerItemAdapter adapter;
+    private List<TimelessReminderEntity> timelessReminderEntities;
+    private AlternativeWeeklyRecyclerItemAdapter adapter;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
-    public AlternativeDailyDealsContainerFragment() {
+    public AlternativeWeeklyDealsContainerFragment() {
         // Required empty public constructor
     }
 
@@ -60,15 +53,15 @@ public class AlternativeDailyDealsContainerFragment extends Fragment {
      * @return A new instance of fragment AlternativeDailyDealsRemindersFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static AlternativeDailyDealsContainerFragment newInstance() {
-        return new AlternativeDailyDealsContainerFragment();
+    public static AlternativeWeeklyDealsContainerFragment newInstance() {
+        return new AlternativeWeeklyDealsContainerFragment();
     }
-    public static void setDb(RemDatabase db) {
-        AlternativeDailyDealsContainerFragment.db = db;
+    public static void setTdb(TimelessRemDatabase tdb) {
+        AlternativeWeeklyDealsContainerFragment.tdb = tdb;
     }
 
     public static void setParent(FragmentManager parent) {
-        AlternativeDailyDealsContainerFragment.parent = parent;
+        AlternativeWeeklyDealsContainerFragment.parent = parent;
     }
 
     @Override
@@ -78,14 +71,14 @@ public class AlternativeDailyDealsContainerFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-        dao = db.reminderDao();
-        if (titles != ReminderEntity.getTitlesFromDatabase(dao)) {
-            titles = ReminderEntity.getTitlesFromDatabase(dao);
-            reminderEntityList = ReminderEntity.getAll(dao);
+        tdao = tdb.timelessReminderDao();
+        if (titles != TimelessReminderEntity.getTitlesFromDatabase(tdao)) {
+            titles = TimelessReminderEntity.getTitlesFromDatabase(tdao);
+            timelessReminderEntities = TimelessReminderEntity.getAll(tdao);
         }
     }
     public static void setContext(Context context) {
-        AlternativeDailyDealsContainerFragment.context = context;
+        AlternativeWeeklyDealsContainerFragment.context = context;
     }
 
     @Override
@@ -93,13 +86,12 @@ public class AlternativeDailyDealsContainerFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_alternative_daily_deals_reminders, container, false);
-        adapter = new AlternativeRecyclerItemAdapter(context, dao, titles, reminderEntityList, LocalDate.now());
+        adapter = new AlternativeWeeklyRecyclerItemAdapter(context, tdao, titles, timelessReminderEntities, LocalDate.now());
         rList = (RecyclerView) view.findViewById(R.id.item_layout);
         rList.setLayoutManager(new LinearLayoutManager(context));
         rList.setAdapter(adapter);
-        ReminderDCC.setAltAdapter(adapter);
-        NotificationService.setAltDailyAdapter(adapter);
-        Listeners.setAltAdapter(adapter);
+        TimelessReminderDCC.setAltWeekAdapter(adapter);
+        Listeners.setAltWeekAdapter(adapter);
         return view;
     }
 }

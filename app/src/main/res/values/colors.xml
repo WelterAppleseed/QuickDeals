@@ -2,21 +2,20 @@
 <resources>
     <color name="colorPrimary">#FFFFFF</color>
     <color name="colorGray">#DADADA</color>
-    <color name="colorAccent">#32EA4B</color>
+    <color name="colorAccent">#85FF95</color>
     <color name="colorPressedB">#F8BA5D</color>
     <color name="colorNull">#00000000</color>
     <color name="colorRed">#DA2929</color>
     <color name="colorWhite">#FFFFFF</color>
     <color name="colorBlack">#000000</color>
     <color name="colorGreen">#CBFFAE</color>
+    <color name="colorBlackTranslucent">#28000000</color>
+    <color name="colorSelectedViewGreen">#05C616</color>
     <color name="colorGray2">#F8F8F8</color>
     <color name="colorTopbar">#EAEAEA</color>
     <color name="colorOrange">#FFD277</color>
     <color name="colorOnDeleteForeground">#99000000</color>
     <color name="colorOnDeleteViewPagerForeground">#0E000000</color>
-
-
-
     <color name="bg_row_background">#fa315b</color>
     <color name="item_name">#535353</color>
     <color name="description">#a9a9a9</color>

@@ -1,5 +1,6 @@
 package com.example.quickdeals;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -7,6 +8,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.View;
+import android.view.Window;
 import android.widget.LinearLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,9 +22,12 @@ import com.example.quickdeals.daily.container.AlternativeDailyDealsContainerFrag
 import com.example.quickdeals.daily.container.DefaultDailyDealsContainerFragment;
 import com.example.quickdeals.daily.dialog.notifications.AlarmManagerBroadcastReceiver;
 import com.example.quickdeals.daily.dialog.notifications.NotificationService;
+import com.example.quickdeals.study.containers.AlternativeWeeklyDealsContainerFragment;
+import com.example.quickdeals.study.containers.DefaultWeeklyDealsContainerFragment;
 import com.example.quickdeals.utils.Listeners;
 import com.example.quickdeals.daily.dialog.notifications.NotificationCreator;
 import com.example.quickdeals.daily.ReminderInitializer;
+import com.example.quickdeals.utils.Utils;
 import com.example.quickdeals.utils.reminders.SavedReminder;
 import com.example.quickdeals.utils.states.States;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -29,6 +35,7 @@ import com.zerobranch.layout.SwipeLayout;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
     private FloatingActionButton addItem;
@@ -65,7 +72,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.main);
         DailyRemindersFragment.setContext(MainActivity.this);
         DefaultDailyDealsContainerFragment.setContext(MainActivity.this);
+        DefaultWeeklyDealsContainerFragment.setContext(MainActivity.this);
         AlternativeDailyDealsContainerFragment.setContext(MainActivity.this);
+        AlternativeWeeklyDealsContainerFragment.setContext(MainActivity.this);
         NotificationService.setActivity(MainActivity.this);
         ShablonFragment.setContext(MainActivity.this);
         //setInitialData();
@@ -79,50 +88,17 @@ public class MainActivity extends AppCompatActivity {
         AlarmManagerBroadcastReceiver.isWorking = hasFocus;
         super.onWindowFocusChanged(hasFocus);
     }
-    /* private void setInitialData(){
-        states = new ArrayList<State>();
-        changeReminder = new Intent(MainActivity.this, RemindersOptions.class);
 
-    }
-    private void restoreReminders() {
-        items = new ArrayList<>();
-        preferences = getSharedPreferences("all_titles", Context.MODE_PRIVATE);
-        Map<String, ?> allEntries = preferences.getAll();
-        for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
-            String title = entry.getValue().toString();
-            items.add(title);
-        }
-        ImageButton dailyButton = (ImageButton) findViewById(R.id.first_fragment);
-        dailyButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-               startActivity(changeReminder);
-            }
-        });
-
-
+    @Override
+    public void onBackPressed() {
+        Intent homeIntent = new Intent(Intent.ACTION_MAIN);
+        homeIntent.addCategory( Intent.CATEGORY_HOME );
+        homeIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(homeIntent);
     }
 
-
-    private void contentCreate() {
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
-    public void start() {
-        AlarmManager manager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        Date dat = new Date();
-        Calendar cal_alarm = Calendar.getInstance();
-        Calendar cal_now = Calendar.getInstance();
-        cal_now.setTime(dat);
-        cal_alarm.setTime(dat);
-        cal_alarm.set(Calendar.HOUR_OF_DAY, 16);
-        cal_alarm.set(Calendar.MINUTE, 39);
-        cal_alarm.set(Calendar.SECOND, 0);
-        if (cal_alarm.before(cal_now)) {
-            cal_alarm.add(Calendar.DATE, 1);
-        }
-
-        Intent myIntent = new Intent(getApplicationContext(), AlarmManagerBroadcastReceiver.class);
-        pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, myIntent, 0);
-        manager.set(AlarmManager.RTC_WAKEUP, cal_alarm.getTimeInMillis(), pendingIntent);
-    }
-*/
 }

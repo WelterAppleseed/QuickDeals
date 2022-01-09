@@ -121,10 +121,8 @@ public class DefaultDailyDealsContainerFragment extends Fragment {
             reminderEntityList = ReminderEntity.getAll(dao);
             ReminderReview.setContext(context);
             ReminderReview.setDao(dao);
-            ReminderReview.setIsFirstItem(titles.size() == 0);
             ReminderDCC.setContext(context);
             ReminderDCC.setDao(dao);
-            ReminderDCC.setIsFirstItem(titles.size() == 0);
             dccFragment = new ReminderDCC();
             reviewFragment = new ReminderReview();
             RecyclerItemAdapter.setReviewFragment(reviewFragment);

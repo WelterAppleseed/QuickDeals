@@ -46,9 +46,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="90dp"
                     android:layout_gravity="center"
-                    android:src="@drawable/calendar"
+                    android:src="@drawable/ic_calendar"
                     android:transitionName="rem_icon_t"
-                    app:srcCompat="@drawable/calendar" />
+                    app:srcCompat="@drawable/ic_calendar" />
             </FrameLayout>
 
             <Space
@@ -240,8 +240,8 @@
                                     android:layout_width="30dp"
                                     android:layout_height="30dp"
                                     android:layout_gravity="end"
-                                    android:src="@drawable/calendar"
-                                    app:srcCompat="@drawable/calendar" />
+                                    android:src="@drawable/ic_calendar"
+                                    app:srcCompat="@drawable/ic_calendar" />
                             </FrameLayout>
 
                         </LinearLayout>

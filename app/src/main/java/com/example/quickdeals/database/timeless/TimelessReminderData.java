@@ -149,5 +149,4 @@ public class TimelessReminderData {
     public int getMinutes() {
         return minutes;
     }
-
 }

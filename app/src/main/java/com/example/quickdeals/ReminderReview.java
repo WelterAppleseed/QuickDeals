@@ -94,6 +94,7 @@ public class ReminderReview extends Fragment {
     private  ArrayList<Integer> time;
     private LocalDate localDate;
     private static AlarmManager alarmManager;
+    private ShablonFragment shablonFragment;
 
     private static boolean isExist = false;
 
@@ -176,6 +177,7 @@ public class ReminderReview extends Fragment {
 
     private void initializeContent(final View view, boolean isExist) {
         c = Calendar.getInstance();
+        shablonFragment = (ShablonFragment) getParentFragment();
         v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
         scrollView = view.findViewById(R.id.scroll_rem_t);
         remSTT = view.findViewById(R.id.rem_st_t);
@@ -282,7 +284,7 @@ public class ReminderReview extends Fragment {
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ShablonFragment.showOrHideFragment(getParentFragmentManager(), ReminderReview.this, (ShablonFragment) getParentFragment(),false);
+                ShablonFragment .showOrHideFragment(getParentFragmentManager(), ReminderReview.this,  shablonFragment, false);
             }
         });
         okB = (Button) view.findViewById(R.id.ok_b);
@@ -296,7 +298,7 @@ public class ReminderReview extends Fragment {
         cancelB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ShablonFragment.showOrHideFragment(getParentFragmentManager(), ReminderReview.this, (ShablonFragment) getParentFragment(),false);
+                ShablonFragment.showOrHideFragment(getParentFragmentManager(), ReminderReview.this,  shablonFragment, false);
             }
         });
 
@@ -326,7 +328,7 @@ public class ReminderReview extends Fragment {
             Log.i("UpdateItem:", "Send item to database back.");
             adapter.change(item, position);
             Log.i("UpdateItem:", "Item is updated.");
-            ShablonFragment.showOrHideFragment(getParentFragmentManager(), ReminderReview.this, (ShablonFragment) getParentFragment(),false);
+            ShablonFragment.showOrHideFragment(getParentFragmentManager(), ReminderReview.this, shablonFragment, false);
             updateNotification(item.getCount(), title);
         }
     }

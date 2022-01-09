@@ -36,6 +36,7 @@ import com.example.quickdeals.database.timeless.dao.TimelessReminderDao;
 import com.example.quickdeals.database.timeless.entity.TimelessReminderEntity;
 import com.example.quickdeals.study.adapter.GridRecyclerViewAdapter;
 import com.example.quickdeals.utils.CompoundListeners;
+import com.example.quickdeals.utils.reminders.AlternativeWeeklyRecyclerItemAdapter;
 import com.example.quickdeals.utils.reminders.RecyclerItemAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
@@ -88,6 +89,8 @@ public class TimelessReminderDCC extends Fragment implements View.OnClickListene
     private static AlarmManager alarmManager;
     private TextView monTV, tueTV, wedTV, thuTV, friTV, satTV, sunTV;
     private static TimelessReminderDao timelessReminderDao;
+    private ShablonFragment shablonFragment;
+    private static AlternativeWeeklyRecyclerItemAdapter altWeekAdapter;
 
 
     public TimelessReminderDCC() {
@@ -117,12 +120,17 @@ public class TimelessReminderDCC extends Fragment implements View.OnClickListene
         super.onCreate(savedInstanceState);
     }
 
+    public static void setAltWeekAdapter(AlternativeWeeklyRecyclerItemAdapter altWeekAdapter) {
+        TimelessReminderDCC.altWeekAdapter = altWeekAdapter;
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_timeless_reminder_d_c_c, container, false);
         c = Calendar.getInstance();
+        shablonFragment = (ShablonFragment) getParentFragment();
         v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
         scrollView = view.findViewById(R.id.scroll_rem_t);
         spinner = (Spinner) view.findViewById(R.id.notif_time_sp);
@@ -147,7 +155,7 @@ public class TimelessReminderDCC extends Fragment implements View.OnClickListene
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ShablonFragment.showOrHideFragment(getParentFragmentManager(), TimelessReminderDCC.this, (ShablonFragment) getParentFragment(),false);
+                ShablonFragment.showOrHideFragment(getParentFragmentManager(), TimelessReminderDCC.this, shablonFragment,  false);
             }
         });
         okB = (Button) view.findViewById(R.id.ok_b);
@@ -161,7 +169,7 @@ public class TimelessReminderDCC extends Fragment implements View.OnClickListene
         cancelB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ShablonFragment.showOrHideFragment(getParentFragmentManager(), TimelessReminderDCC.this, (ShablonFragment) getParentFragment(),false);
+                ShablonFragment.showOrHideFragment(getParentFragmentManager(), TimelessReminderDCC.this,  shablonFragment, false);
             }
         });
     return view;
@@ -201,10 +209,11 @@ public class TimelessReminderDCC extends Fragment implements View.OnClickListene
             List<TimelessReminderEntity> reminderEntityList = TimelessReminderEntity.getAll(timelessReminderDao);
             adapter.setCourseDataArrayList(reminderEntityList);
             adapter.add(title);
+            altWeekAdapter.update(title, reminderEntityList.get(reminderEntityList.size()-1));
             Log.i("AddItem: ", "Item is added.");
             //addNotification(ReminderEntity.getEntity(dao, title).getCount(), title, alarmSwitch.isChecked(), repeatSwitch.isChecked());
             addTimelessNotification(TimelessReminderEntity.getEntity(timelessReminderDao, title).getCount(), title, days);
-            ShablonFragment.showOrHideFragment(getParentFragmentManager(), TimelessReminderDCC.this, (ShablonFragment) getParentFragment(),false);
+            ShablonFragment.showOrHideFragment(getParentFragmentManager(), TimelessReminderDCC.this, shablonFragment,  false);
         }
     }
     private void addTimelessNotification(int id, String contentTitle, boolean [] selectedWeekDays) {

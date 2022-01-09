@@ -1,32 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main_start_container"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".start.StartFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <LinearLayout
+    <me.itangqi.waveloadingview.WaveLoadingView
+        android:id="@+id/waveLoadingView"
+        wlv_borderColor="@color/colorGreen"
+        wlv_borderWidth="3dp"
+        wlv_progressValue="-30"
+        wlv_round_rectangle="true"
+        wlv_shapeType="circle"
+        wlv_titleCenter="Center Title"
+        wlv_titleCenterColor="@android:color/white"
+        wlv_titleCenterSize="24sp"
+        wlv_titleCenterStrokeColor="@android:color/holo_blue_dark"
+        wlv_titleCenterStrokeWidth="3dp"
+        wlv_triangle_direction="north"
+        wlv_waveAmplitude="70"
+        wlv_waveColor="@color/colorGreen"
+        android:layout_width="840dp"
+        android:layout_height="840dp"
+        android:layout_gravity="center" />
+
+    <TextView
+        android:id="@+id/wish_text_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:orientation="vertical">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:text="@string/hello_blank_fragment"
-            android:textSize="20sp" />
-
-        <Button
-            android:id="@+id/button3"
-            android:layout_gravity="center"
-            android:layout_marginTop="10dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Button" />
-    </LinearLayout>
+        android:layout_marginBottom="50dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
+        android:alpha="0"
+        android:gravity="center"
+        android:text="@string/hello_blank_fragment"
+        android:textColor="@color/colorBlack"
+        android:textSize="50sp" />
 
 </FrameLayout>

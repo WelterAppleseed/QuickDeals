@@ -2,19 +2,22 @@ package com.example.quickdeals;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.ColorDrawable;
+import android.graphics.Color;
+import android.graphics.drawable.Animatable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.navigation.NavOptions;
 import androidx.room.Room;
-import androidx.room.RoomDatabase;
-import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.os.Handler;
 import android.transition.TransitionInflater;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,8 +26,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import androidx.appcompat.widget.Toolbar;
@@ -39,9 +46,14 @@ import com.example.quickdeals.study.StudyFragment;
 import com.example.quickdeals.study.TimelessReminderDCC;
 import com.example.quickdeals.study.TimelessReminderReview;
 import com.example.quickdeals.study.adapter.GridRecyclerViewAdapter;
+import com.example.quickdeals.study.containers.AlternativeWeeklyDealsContainerFragment;
+import com.example.quickdeals.study.containers.DefaultWeeklyDealsContainerFragment;
 import com.example.quickdeals.utils.Listeners;
+import com.example.quickdeals.utils.Utils;
 import com.example.quickdeals.utils.reminders.RecyclerItemAdapter;
 import com.google.android.material.snackbar.Snackbar;
+
+import java.util.Objects;
 
 
 /**
@@ -66,10 +78,9 @@ public class ShablonFragment extends Fragment implements View.OnClickListener {
     private FrameLayout deletePane;
     private View view;
     private static FragmentManager parentManager;
-    private static boolean isUpdated;
+    private static boolean dailyIsUpdated, weeklyIsUpdated;
     private static Context context;
-    private DefaultDailyDealsContainerFragment dFragment;
-    private AlternativeDailyDealsContainerFragment aFragment;
+    private Menu dynamicalMenu;
 
     public ShablonFragment() {
         // Required empty public constructor
@@ -97,6 +108,11 @@ public class ShablonFragment extends Fragment implements View.OnClickListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.i("Menu", "Menu is built in onCreate");
+        try {
+            ((AppCompatActivity) getActivity()).getSupportActionBar().show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         setHasOptionsMenu(true);
         setMenuVisibility(true);
         initDatabases();
@@ -119,7 +135,7 @@ public class ShablonFragment extends Fragment implements View.OnClickListener {
         viewPager.setAdapter(new ViewPagerAdapter(this));
         DailyRemindersFragment.setParentView(view);
         RecyclerItemAdapter.setShablonFragment(this);
-
+        GridRecyclerViewAdapter.setShablonFragment(this);
         return view;
     }
 
@@ -133,7 +149,18 @@ public class ShablonFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         Log.i("Menu", "Inflating menu.");
+        dynamicalMenu = menu;
         inflater.inflate(R.menu.menu, menu);
+        final MenuItem item = menu.findItem(R.id.action_edit);
+        try {
+            Thread.sleep(300);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Drawable drawable = item.getIcon();
+        if (drawable instanceof Animatable) {
+            ((Animatable) drawable).start();
+        }
     }
 
     @Override
@@ -144,14 +171,20 @@ public class ShablonFragment extends Fragment implements View.OnClickListener {
                 if (Listeners.snackbar != null && Listeners.snackbar.isShown()) {
                     Listeners.snackbar.setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE).dismiss();
                 }
-                DailyRemindersFragment.setAlternativeView(isUpdated, parentManager);
-                isUpdated = !isUpdated;
+                DailyRemindersFragment.setAlternativeView(dailyIsUpdated, parentManager, this);
+                dailyIsUpdated = !dailyIsUpdated;
+                toStudyFragmentButton.setClickable(!dailyIsUpdated);
                 Log.i("Menu", "Edit.");
                 return true;
             } else {
                 if (Listeners.snackbar != null && Listeners.snackbar.isShown()) {
                     Listeners.snackbar.setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE).dismiss();
                 }
+                StudyFragment.setAlternativeView(weeklyIsUpdated, parentManager, this);
+                weeklyIsUpdated = !weeklyIsUpdated;
+                toDailyFragmentButton.setClickable(!weeklyIsUpdated);
+                Log.i("Menu", "Edit.");
+                return true;
             }
         }
         return super.onOptionsItemSelected(item);
@@ -162,45 +195,68 @@ public class ShablonFragment extends Fragment implements View.OnClickListener {
         int numOfFragment;
         if (v == toDailyFragmentButton) {
             numOfFragment = 0;
+            toDailyFragmentButton.getDrawable().setTint(getResources().getColor(R.color.colorSelectedViewGreen));
+            toStudyFragmentButton.getDrawable().setTint(getResources().getColor(R.color.colorBlack));
         } else {
             numOfFragment = 1;
+            toDailyFragmentButton.getDrawable().setTint(getResources().getColor(R.color.colorBlack));
+            toStudyFragmentButton.getDrawable().setTint(getResources().getColor(R.color.colorSelectedViewGreen));
             if (Listeners.snackbar != null && Listeners.snackbar.isShown()) {
                 Listeners.snackbar.setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE).dismiss();
             }
         }
         viewPager.setCurrentItem(numOfFragment, false);
     }
+
     private void initDatabases() {
         RemDatabase db = Room.databaseBuilder(context, RemDatabase.class, "remind_database").build();
         AlternativeDailyDealsContainerFragment.setDb(db);
         AlternativeDailyDealsContainerFragment.setParent(getChildFragmentManager());
         DefaultDailyDealsContainerFragment.setDb(db);
         DefaultDailyDealsContainerFragment.setParent(getChildFragmentManager());
-        aFragment = AlternativeDailyDealsContainerFragment.newInstance();
-        dFragment = DefaultDailyDealsContainerFragment.newInstance();
+        AlternativeDailyDealsContainerFragment aFragment = AlternativeDailyDealsContainerFragment.newInstance();
+        DefaultDailyDealsContainerFragment dFragment = DefaultDailyDealsContainerFragment.newInstance();
         DailyRemindersFragment.setDefaultFragment(dFragment);
         DailyRemindersFragment.setAlternativeFragment(aFragment);
 
-        TimelessRemDatabase tdb = Room.databaseBuilder(context, TimelessRemDatabase.class, "timeless_remind_database").build();
+        /*TimelessRemDatabase tdb = Room.databaseBuilder(context, TimelessRemDatabase.class, "timeless_remind_database").build();
         TimelessReminderDCC.setContext(context);
         TimelessReminderDCC.setTimelessReminderDao(tdb.timelessReminderDao());
         TimelessReminderReview.setContext(context);
         TimelessReminderReview.setTimelessReminderDao(tdb.timelessReminderDao());
         GridRecyclerViewAdapter.setShablonFragment(this);
-        StudyFragment.initRecyclerList(tdb);
+        StudyFragment.initRecyclerList(tdb);*/
+        TimelessRemDatabase tdb = Room.databaseBuilder(context, TimelessRemDatabase.class, "timeless_remind_database").build();
+        AlternativeWeeklyDealsContainerFragment.setTdb(tdb);
+        AlternativeWeeklyDealsContainerFragment.setParent(getChildFragmentManager());
+        DefaultWeeklyDealsContainerFragment.setTdb(tdb);
+        DefaultWeeklyDealsContainerFragment.setParent(getChildFragmentManager());
+        AlternativeWeeklyDealsContainerFragment atFragment = AlternativeWeeklyDealsContainerFragment.newInstance();
+        DefaultWeeklyDealsContainerFragment dtFragment = DefaultWeeklyDealsContainerFragment.newInstance();
+        StudyFragment.setDefaultFragment(dtFragment);
+        StudyFragment.setAlternativeFragment(atFragment);
+        ShablonFragment.addAlternativeRListFragments(getChildFragmentManager(), aFragment, atFragment);
     }
 
     public static void addFragments(FragmentManager parentManager, ReminderDCC fragment1, ReminderReview fragment2) {
         FragmentTransaction transaction = parentManager.beginTransaction();
         transaction.replace(R.id.dcc_container, fragment1, "dcc_fragment").hide(fragment1).replace(R.id.review_container, fragment2, "review_edit_fragment").hide(fragment2).commit();
     }
+
     public static void addTimelessFragments(FragmentManager parentManager, TimelessReminderDCC tdccFragment, TimelessReminderReview treviewFragment) {
         FragmentTransaction transaction = parentManager.beginTransaction();
         transaction.replace(R.id.tdcc_container, tdccFragment, "tdcc_fragment").hide(tdccFragment).replace(R.id.treview_container, treviewFragment, "treview_edit_fragment").hide(treviewFragment).commit();
     }
 
+    private static void addAlternativeRListFragments(FragmentManager parentManager, AlternativeDailyDealsContainerFragment dAltFragment, AlternativeWeeklyDealsContainerFragment wAltFragment) {
+        FragmentTransaction transaction = parentManager.beginTransaction();
+        transaction.replace(R.id.d_alt_container, dAltFragment, "d_alt_fragment").hide(dAltFragment).replace(R.id.w_alt_container, wAltFragment, "w_alt_fragment").hide(wAltFragment).commit();
+    }
+
     public static void showOrHideFragment(FragmentManager parentManager, Fragment fragment, ShablonFragment shablonFragment, boolean show) {
         FragmentTransaction transaction = parentManager.beginTransaction();
+        shablonFragment.setSharedElementReturnTransition(TransitionInflater.from(shablonFragment.getActivity()).inflateTransition(R.transition.change_image_transform));
+        fragment.setSharedElementEnterTransition(TransitionInflater.from(shablonFragment.getActivity()).inflateTransition(R.transition.change_image_transform));
         transaction.setCustomAnimations(0, R.anim.exit, R.anim.enter, 0);
         if (show) {
             transaction.show(fragment).commit();
@@ -225,5 +281,23 @@ public class ShablonFragment extends Fragment implements View.OnClickListener {
 
     public static void setContext(Context context) {
         ShablonFragment.context = context;
+    }
+
+    private void animateActionBarItem() {
+        final MenuItem refreshItem = dynamicalMenu.findItem(R.id.action_edit);
+        refreshItem.setActionView(R.layout.action_view_layout);
+        refreshItem.getActionView()
+                .animate()
+                .setInterpolator(new AccelerateInterpolator())
+                .setDuration(100L)
+                .scaleX(2F)
+                .scaleY(2F)
+                .withEndAction(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        refreshItem.setActionView(null);
+                    }
+                });
     }
 }

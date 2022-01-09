@@ -31,8 +31,8 @@
             android:layout_height="60dp"
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
-            android:src="@drawable/calendar"
-            app:srcCompat="@drawable/calendar" />
+            android:src="@drawable/ic_calendar"
+            app:srcCompat="@drawable/ic_calendar" />
 
         <EditText
             android:id="@+id/reminder_title"
@@ -168,8 +168,8 @@
                         android:layout_width="30dp"
                         android:layout_height="30dp"
                         android:layout_gravity="end"
-                        android:src="@drawable/calendar"
-                        app:srcCompat="@drawable/calendar" />
+                        android:src="@drawable/ic_calendar"
+                        app:srcCompat="@drawable/ic_calendar" />
                 </FrameLayout>
 
             </LinearLayout>

@@ -11,6 +11,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.transition.TransitionInflater;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -78,6 +79,7 @@ public class DailyRemindersFragment extends Fragment implements View.OnClickList
     private static ProgressBar progressBar;
     public static DefaultDailyDealsContainerFragment defaultFragment;
     public static AlternativeDailyDealsContainerFragment alternativeFragment;
+    private ShablonFragment shablonFragment;
 
     public static void setParentView(View parentView) {
         DailyRemindersFragment.parentView = parentView;
@@ -138,6 +140,7 @@ public class DailyRemindersFragment extends Fragment implements View.OnClickList
 
     private void createAndInitContent(final View view) {
         context = view.getContext();
+        shablonFragment = (ShablonFragment) getParentFragment();
         frameLayout = (FrameLayout) view.findViewById(R.id.updated_view_container);
         img = view.findViewById(R.id.empty_imageView);
         progressBar = view.findViewById(R.id.default_d_d_progress_bar);
@@ -146,52 +149,24 @@ public class DailyRemindersFragment extends Fragment implements View.OnClickList
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ShablonFragment.showOrHideFragment(getParentFragmentManager(), dccFragment, (ShablonFragment) getParentFragment(),true);
+                ShablonFragment.showOrHideFragment(getParentFragmentManager(), dccFragment, shablonFragment, true);
             }
         });
         ShablonFragment.setParentManager(getParentFragmentManager());
-
     }
 
-    public static void setAlternativeView(boolean isUpdated, FragmentManager parentManager) {
-        FragmentTransaction parentTransaction = parentManager.beginTransaction();
-        if (isUpdated) {
-            parentTransaction.replace(R.id.updated_view_container, DailyRemindersFragment.defaultFragment).commit();
+    public static void setAlternativeView(boolean isUpdated, FragmentManager parentManager, ShablonFragment shablonFragment) {
+        FragmentTransaction transaction = parentManager.beginTransaction();
+        shablonFragment.setSharedElementReturnTransition(TransitionInflater.from(shablonFragment.getActivity()).inflateTransition(R.transition.change_image_transform));
+        DailyRemindersFragment.alternativeFragment.setEnterTransition(TransitionInflater.from(shablonFragment.getActivity()).inflateTransition(android.R.transition.slide_top));
+        transaction.setCustomAnimations(0, R.anim.exit, R.anim.enter, 0);
+        if (!isUpdated) {
+            alternativeFragment.rList.scrollToPosition(0);
+            transaction.show(DailyRemindersFragment.alternativeFragment).commit();
         } else {
-            Runnable r = new Runnable() {
-                @Override
-                public void run() {
-                    DailyRemindersFragment.defaultFragment.initDefaultRV();
-                }
-            };
-            ExecutorService executorService = Executors.newCachedThreadPool();
-            executorService.submit(r);
-            executorService.shutdown();
-            parentTransaction.replace(R.id.updated_view_container, DailyRemindersFragment.alternativeFragment).commit();
+            transaction.hide(DailyRemindersFragment.alternativeFragment).commit();
         }
     }
-    /*  public void restoreReminders() {
-        db = Room.databaseBuilder(context, RemDatabase.class, "remind_database").build();
-        dao = db.reminderDao();
-        titles = ReminderEntity.getTitlesFromDatabase(dao);
-        reminderEntityList = ReminderEntity.getAll(dao);
-        savedReminder = new SavedReminder(context);
-        adapter = new RecyclerItemAdapter(context, dao, titles, reminderEntityList);
-        ReminderReview.setContext(context);
-        ReminderReview.setAdapter(adapter);
-        ReminderReview.setDao(dao);
-        ReminderReview.setIsFirstItem(titles.size()==0);
-        ReminderDCC.setContext(context);
-        ReminderDCC.setAdapter(adapter);
-        ReminderDCC.setDao(dao);
-        ReminderDCC.setIsFirstItem(titles.size()==0);
-        NotificationService.setAdapter(adapter);
-        //ReminderOptions.setContext(context);
-        ReminderOptions.setAdapter(adapter);
-        ReminderOptions.setDao(dao);
-        ReminderOptions.setIsFirstItem(titles.size()==0);
-    }
-*/
 
     @Nullable
     @Override

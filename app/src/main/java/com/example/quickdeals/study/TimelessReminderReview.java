@@ -93,6 +93,7 @@ public class TimelessReminderReview extends Fragment implements View.OnClickList
     private int position;
     private boolean [] weekdays;
     private ArrayList<Integer> time;
+    private ShablonFragment shablonFragment;
 
 
     public TimelessReminderReview() {
@@ -144,6 +145,7 @@ public class TimelessReminderReview extends Fragment implements View.OnClickList
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_timeless_reminder_review, container, false);
         c = Calendar.getInstance();
+        shablonFragment = (ShablonFragment) getParentFragment();
         v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
         remSTT = view.findViewById(R.id.rem_st_t);
         iconView = view.findViewById(R.id.notif_type_ic);
@@ -170,7 +172,7 @@ public class TimelessReminderReview extends Fragment implements View.OnClickList
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ShablonFragment.showOrHideFragment(getParentFragmentManager(), TimelessReminderReview.this, (ShablonFragment) getParentFragment(), false);
+                ShablonFragment.showOrHideFragment(getParentFragmentManager(), TimelessReminderReview.this,  shablonFragment,  false);
             }
         });
         okB = (Button) view.findViewById(R.id.ok_b);
@@ -184,7 +186,7 @@ public class TimelessReminderReview extends Fragment implements View.OnClickList
         cancelB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ShablonFragment.showOrHideFragment(getParentFragmentManager(), TimelessReminderReview.this, (ShablonFragment) getParentFragment(), false);
+                ShablonFragment.showOrHideFragment(getParentFragmentManager(), TimelessReminderReview.this, shablonFragment,  false);
             }
         });
         return view;
@@ -234,7 +236,7 @@ public class TimelessReminderReview extends Fragment implements View.OnClickList
             Log.i("UpdateItem:", "Send item to database back.");
             adapter.change(item, position);
             Log.i("UpdateItem:", "Item is updated.");
-            ShablonFragment.showOrHideFragment(getParentFragmentManager(), TimelessReminderReview.this, (ShablonFragment) getParentFragment(),  false);
+            ShablonFragment.showOrHideFragment(getParentFragmentManager(), TimelessReminderReview.this, shablonFragment,   false);
             updateTimelessNotification(item.getCount(), title, days);
         }
     }
